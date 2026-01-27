@@ -5,6 +5,11 @@
   },
   "plugins": [
     {
+      "name": "typescript",
+      "source": "./skills/typescript",
+      "description": "TypeScript knowledge patch - updates Claude's knowledge about latest TypeScript features"
+    },
+    {
       "name": "rust",
       "source": "./skills/rust",
       "description": "Rust knowledge patch - updates Claude's knowledge about latest Rust features"
