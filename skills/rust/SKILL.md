@@ -1,7 +1,10 @@
 ---
 name: Rust
-description: This skill should be used when writing Rust code, using async closures, let chains, Edition 2024 features, new collection methods like extract_if, integer arithmetic methods, or any Rust features from 2025-2026.
-version: 1.93
+description: This skill should be used when writing Rust code, using async closures, let chains, Edition 2024 features, new collection methods like extract_if, integer arithmetic methods, or any Rust features from 2024-2026.
+license: MIT
+metadata:
+  author: nevaberry
+  version: "1.93"
 ---
 
 # Rust 1.85-1.93 Knowledge Patch
