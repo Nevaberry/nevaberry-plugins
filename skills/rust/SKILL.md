@@ -3,7 +3,7 @@ name: Rust
 description: This skill should be used when writing Rust code, using async closures, let chains, Edition 2024 features, new collection methods like extract_if, integer arithmetic methods, or any Rust features from 2024-2026.
 license: MIT
 metadata:
-  author: nevaberry
+  author: Nevaberry
   version: "1.93"
 ---
 

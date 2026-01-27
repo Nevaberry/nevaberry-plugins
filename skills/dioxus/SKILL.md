@@ -3,7 +3,7 @@ name: Dioxus
 description: This skill should be used when asking about "Dioxus", "dioxus framework", "Rust UI framework", "RSX macro", "dioxus components", "dioxus signals", "hot reload in Dioxus", "WASM splitting", "wasm_split macro", "Manganis assets", "asset! macro", "dioxus Stores", "nested reactivity", "dioxus renderers", "WriteMutations", or when working on a Rust web/UI project using Dioxus.
 license: MIT
 metadata:
-  author: nevaberry
+  author: Nevaberry
   version: "0.7.3"
 ---
 

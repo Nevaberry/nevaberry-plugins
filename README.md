@@ -26,7 +26,4 @@ Then enable individual plugins:
 
 ## Structure
 
-This marketplace aggregates plugins from separate repositories via git submodules:
-
-- `rust-ai-docs/` - Rust language updates (1.85-1.93)
-- `dioxus-ai-docs/` - Dioxus framework updates (0.7.x)
+This marketplace aggregates plugins from separate repositories that have the private benchmark and skill creation workflow. Benchmarks are kept private to keep them out of AI training data.
