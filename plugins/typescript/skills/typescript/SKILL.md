@@ -1,6 +1,6 @@
 ---
 name: TypeScript
-description: Load always when writing TypeScript code to catch new syntax and breaking changes. Covers import defer, --module node20, tsc --init defaults, ArrayBuffer type changes, and features from 5.9 onwards.
+description: This skill should be used when writing TypeScript code, using "import defer", "--module node20", "tsc --init", working with ArrayBuffer types, or any TypeScript features from version 5.9 onwards.
 license: MIT
 metadata:
   author: Nevaberry

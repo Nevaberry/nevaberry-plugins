@@ -1,23 +1,29 @@
 {
-  "name": "nevaberry",
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "nevaberry-plugins",
+  "description": "Knowledge patches for programming languages and frameworks - updates Claude's knowledge about latest features",
   "owner": {
-    "name": "Nevaberry"
+    "name": "Nevaberry",
+    "email": "support@nevaberry.com"
   },
   "plugins": [
     {
       "name": "typescript",
-      "source": "./skills/typescript",
-      "description": "TypeScript knowledge patch - updates Claude's knowledge about latest TypeScript features"
+      "source": "./plugins/typescript",
+      "description": "TypeScript knowledge patch - updates Claude's knowledge about TypeScript 5.9+ features including import defer, --module node20, and TS7 transition",
+      "category": "development"
     },
     {
       "name": "rust",
-      "source": "./skills/rust",
-      "description": "Rust knowledge patch - updates Claude's knowledge about latest Rust features"
+      "source": "./plugins/rust",
+      "description": "Rust knowledge patch - updates Claude's knowledge about Rust 1.85-1.93 features including Edition 2024, async closures, and new collection methods",
+      "category": "development"
     },
     {
       "name": "dioxus",
-      "source": "./skills/dioxus",
-      "description": "Dioxus knowledge patch - updates Claude's knowledge about latest Dioxus features"
+      "source": "./plugins/dioxus",
+      "description": "Dioxus knowledge patch - updates Claude's knowledge about Dioxus 0.7.3 features including subsecond hot-patching, WASM splitting, Manganis assets, and Stores",
+      "category": "development"
     }
   ]
 }
