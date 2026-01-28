@@ -8,20 +8,20 @@
   },
   "plugins": [
     {
-      "name": "typescript",
-      "source": "./plugins/typescript",
+      "name": "TypeScript-knowledge-patch",
+      "source": "./plugins/typescript-knowledge-patch",
       "description": "TypeScript knowledge patch - updates Claude's knowledge about TypeScript 5.9+ features including import defer, --module node20, and TS7 transition",
       "category": "development"
     },
     {
-      "name": "rust",
-      "source": "./plugins/rust",
+      "name": "Rust-knowledge-patch",
+      "source": "./plugins/rust-knowledge-patch",
       "description": "Rust knowledge patch - updates Claude's knowledge about Rust 1.85-1.93 features including Edition 2024, async closures, and new collection methods",
       "category": "development"
     },
     {
-      "name": "dioxus",
-      "source": "./plugins/dioxus",
+      "name": "Dioxus-knowledge-patch",
+      "source": "./plugins/dioxus-knowledge-patch",
       "description": "Dioxus knowledge patch - updates Claude's knowledge about Dioxus 0.7.3 features including subsecond hot-patching, WASM splitting, Manganis assets, and Stores",
       "category": "development"
     }
