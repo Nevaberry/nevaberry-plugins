@@ -1,200 +1,227 @@
 ---
 name: Dioxus-knowledge-patch
-description: This skill should be used when asking about "Dioxus", "dioxus framework", "Rust UI framework", "RSX macro", "dioxus components", "dioxus signals", "hot reload in Dioxus", "WASM splitting", "wasm_split macro", "Manganis assets", "asset! macro", "dioxus Stores", "nested reactivity", "dioxus renderers", "WriteMutations", or when working on a Rust web/UI project using Dioxus.
+description: This skill should be used when writing Dioxus code, building Rust web/desktop/mobile apps with Dioxus, using RSX macro, signals, server functions, or any Dioxus features from 0.5+ (2024-2026).
 license: MIT
 metadata:
   author: Nevaberry
   version: "0.7.3"
 ---
 
-# Dioxus 0.7.3 Knowledge Patch
+# Dioxus 0.5+ Knowledge Patch
 
-Claude's baseline knowledge covers Dioxus through 0.6.3. This skill provides 0.7.3 features.
+Claude's baseline knowledge covers Dioxus through 0.4.x. This skill provides features from 0.5 (2024) onwards.
 
 ## Quick Reference
 
-### New in 0.7.3
+### Component Syntax (0.5+)
 
-| Feature | Description |
-|---------|-------------|
-| Subsecond Hot-Patching | Full Rust code hot-reload via jump table |
-| WASM Splitting | Lazy-load chunks for faster initial load |
-| Manganis Assets | `asset!()` macro with optimization & cache-busting |
-| Stores | Nested reactivity with path-based subscriptions |
+| Old (0.4) | New (0.5+) |
+|-----------|------------|
+| `fn App(cx: Scope) -> Element` | `fn App() -> Element` |
+| `cx.use_hook()` | `use_signal()`, `use_memo()` |
+| `use_state`, `use_ref` | `Signal<T>` (always Copy) |
+| Per-platform launchers | `dioxus::launch(App)` |
 
-### Subsecond Hot-Patching
+### Signals
 
-Full Rust hot-reload without restart. Functions called through jump table that gets patched.
+| Operation | Syntax |
+|-----------|--------|
+| Create | `let count = use_signal(\|\| 0);` |
+| Read (subscribes) | `count.read()` or `count()` |
+| Read (no subscribe) | `count.peek()` |
+| Write | `count.write()`, `count.set(5)`, `count += 1` |
+| Global | `static THEME: GlobalSignal<T> = GlobalSignal::new(\|\| ...)` |
+| Mapped | `user.map(\|u\| &u.name)` |
 
-```rust
-// Standard Dioxus - automatic
-fn main() {
-    dioxus::launch(app);
-}
+See `references/signals-hooks.md` for hooks, effects, resources, coroutines.
 
-// Non-Dioxus apps
-fn main() {
-    dioxus_devtools::connect_subsecond();
-    loop {
-        dioxus_devtools::subsecond::call(|| handle_request());
-    }
-}
-```
+### RSX Syntax
 
-**Limitations:** No struct changes (size/alignment), thread-locals reset, only tip crate patches.
+| Pattern | Example |
+|---------|---------|
+| Conditional | `if show { Header {} }` |
+| Conditional attr | `class: if active { "active" }` |
+| List with key | `for item in items { li { key: "{item.id}", ... } }` |
+| Children prop | `fn Card(children: Element) -> Element` |
+| Optional prop | `#[props(default)] disabled: bool` |
+| Prop into | `#[props(into)] id: String` |
 
-See `references/subsecond-hotpatch.md`.
+See `references/rsx-patterns.md` for attributes, events, prop spreading.
 
-### WASM Code Splitting
-
-Split large WASM binaries into lazy-loaded chunks.
-
-```rust
-#[wasm_split(admin_panel)]
-async fn load_admin_panel() -> AdminPanel {
-    AdminPanel::new()  // In separate module_admin_panel.wasm
-}
-
-async fn handle_route(route: Route) {
-    if let Route::Admin = route {
-        let panel = load_admin_panel().await;
-        panel.render();
-    }
-}
-```
-
-**Key points:** Split points must be async, memory shared, requires `--emit-relocs`.
-
-See `references/wasm-split.md`.
-
-### Manganis Assets
-
-Compile-time asset management with optimization.
+### Assets (0.6+)
 
 ```rust
-let img = asset!("/assets/image.png");
-let css = asset!("/assets/style.css", AssetOptions::css().minified());
-
-rsx! {
-    img { src: "{img}" }
-    link { rel: "stylesheet", href: "{css}" }
-}
+const LOGO: Asset = asset!("/assets/logo.png");
+const HERO: Asset = asset!("/hero.png", ImageAssetOptions::new()
+    .format(ImageFormat::Avif).preload(true));
+const STYLES: Asset = asset!("/app.css", CssAssetOptions::new().minify(true));
 ```
 
-**CSS Modules:**
-```rust
-css_module!(Styles = "/my.module.css", AssetOptions::css_module());
-rsx! { div { class: Styles::header } }
-```
+### Server Functions (0.7+)
 
-See `references/manganis-assets.md`.
+| Feature | Syntax |
+|---------|--------|
+| Basic | `#[server] async fn get_data() -> Result<T>` |
+| Route params | `#[get("/api/users/{id}")] async fn get_user(id: u32)` |
+| Query params | `#[get("/search?query")] async fn search(query: String)` |
+| Middleware | `#[server] #[middleware(AuthLayer)]` |
+| Extractors | `async fn auth(headers: HeaderMap, cookies: Cookies)` |
 
-### Stores (Nested Reactivity)
+See `references/fullstack.md` for WebSocket, SSR, streaming, server config.
 
-Granular path-based subscriptions for nested data.
-
-| Scenario | Use |
-|----------|-----|
-| Scalar state | Signal |
-| Nested structures with granular updates | Store |
+### Router
 
 ```rust
-#[derive(Store, Clone)]
-struct TodoItem {
-    checked: bool,
-    contents: String,
-}
-
-let store = Store::new(TodoItem { checked: false, contents: "Buy milk".into() });
-
-// Subscribe only to `checked` field
-let checked = store.checked();
-rsx! { input { checked: checked.read() } }
-
-// Changing `contents` won't re-render above
-store.contents().set("Buy eggs".into());
-```
-
-See `references/stores-signals.md`.
-
-### Renderers
-
-| Renderer | Package | Use Case |
-|----------|---------|----------|
-| Web | dioxus-web | WASM/browser via Sledgehammer JS |
-| Desktop | dioxus-desktop | Wry/Tao webview |
-| Native | dioxus-native | Blitz/Vello GPU (not a browser) |
-| LiveView | dioxus-liveview | WebSocket streaming |
-| SSR | dioxus-ssr | Server-side HTML rendering |
-
-All implement `WriteMutations` trait.
-
-See `references/renderers.md`.
-
-## Workspace Structure
-
-```
-packages/
-├── dioxus/           # Main re-export crate
-├── core/             # VirtualDOM, components, diffing
-├── rsx/              # RSX macro parsing
-├── signals/          # Reactive state (Signal, Memo, Store)
-├── hooks/            # Built-in hooks
-├── router/           # Type-safe routing
-├── fullstack/        # SSR, hydration, #[server]
-├── cli/              # `dx` build tool
-├── web/              # WASM renderer
-├── desktop/          # Wry/Tao webview
-├── native/           # Blitz/Vello GPU renderer
-├── liveview/         # WebSocket streaming
-├── manganis/         # asset!() macro
-├── subsecond/        # Hot-patching system
-└── wasm-split/       # WASM code splitting
-```
-
-## Patterns (Unchanged from 0.5-0.6)
-
-**Components:**
-```rust
-#[component]
-fn MyComponent(name: String) -> Element {
-    let mut count = use_signal(|| 0);
-    rsx! { button { onclick: move |_| count += 1, "{name}: {count}" } }
-}
-```
-
-**Server Functions:**
-```rust
-#[server]
-async fn get_data(id: i32) -> Result<Data, ServerFnError> {
-    // Runs on server, auto-RPC from client
-}
-```
-
-**Routing:**
-```rust
-#[derive(Routable, Clone)]
+#[derive(Routable, Clone, PartialEq)]
 enum Route {
     #[route("/")]
     Home {},
-    #[route("/blog/:id")]
-    Blog { id: usize },
+    #[route("/user/:id")]
+    User { id: u32 },
+    #[route("/files/:..path")]     // Catch-all
+    Files { path: Vec<String> },
 }
 ```
 
-## Architecture
+See `references/router.md` for layouts, navigation, nested routes.
 
-- **WriteMutations**: Trait all renderers implement for DOM changes
-- **Generational-box**: Provides `Copy` semantics for signals
-- **ReactiveContext**: Tracks signal reads for subscription
-- **Template-based**: RSX compiles to static templates, only dynamic parts diffed
+### CLI Commands
+
+| Command | Purpose |
+|---------|---------|
+| `dx serve` | Dev server with hot-reload |
+| `dx serve --platform ios` | iOS simulator |
+| `dx build --release` | Production build |
+| `dx bundle` | Package for distribution |
+| `dx serve --wasm-split` | Route-based code splitting |
+
+See `references/cli-desktop.md` for desktop config, platform args.
 
 ## Reference Files
 
 | File | Contents |
 |------|----------|
-| `references/subsecond-hotpatch.md` | Hot-patching architecture, ASLR, limitations |
-| `references/wasm-split.md` | WASM splitting pipeline, runtime loader |
-| `references/manganis-assets.md` | Asset processing, binary patching, CSS modules |
-| `references/stores-signals.md` | Store derive, subscription tree, memory model |
-| `references/renderers.md` | WriteMutations trait, renderer differences |
+| `signals-hooks.md` | Signals, use_memo, use_effect, use_resource, context |
+| `rsx-patterns.md` | RSX syntax, props, events, conditionals, lists |
+| `fullstack.md` | Server functions, SSR, WebSocket, extractors |
+| `router.md` | Routes, layouts, navigation, parameters |
+| `cli-desktop.md` | CLI commands, desktop config, platforms |
+
+## Critical Knowledge
+
+### Element is Result (0.6+)
+
+Use `?` anywhere - propagates to ErrorBoundary:
+
+```rust
+#[component]
+fn Profile(id: u32) -> Element {
+    let user = get_user(id)?;  // Early return on error
+    rsx! { "{user.name}" }
+}
+```
+
+### Suspense for Async
+
+```rust
+rsx! {
+    SuspenseBoundary {
+        fallback: |_| rsx! { "Loading..." },
+        AsyncChild {}
+    }
+}
+
+fn AsyncChild() -> Element {
+    let data = use_resource(fetch_data).suspend()?;
+    rsx! { "{data}" }
+}
+```
+
+### Document Head
+
+```rust
+use dioxus::document::{Title, Link, Meta};
+
+rsx! {
+    Title { "My Page" }
+    Meta { name: "description", content: "..." }
+    Link { rel: "stylesheet", href: asset!("/style.css") }
+}
+```
+
+### Stores for Nested State (0.7+)
+
+```rust
+#[derive(Store)]
+struct AppState {
+    users: BTreeMap<String, User>,
+}
+
+#[component]
+fn UserList(state: Store<AppState>) -> Element {
+    let users = state.users();
+    rsx! {
+        for (id, user) in users.iter() {
+            UserRow { key: "{id}", user }  // Only changed items re-render
+        }
+    }
+}
+```
+
+### CSS Modules (0.7.3+)
+
+```rust
+css_module!(Styles = "/styles.module.css", AssetOptions::css_module());
+
+rsx! {
+    div { class: Styles::container,  // Typed, compile-checked
+        p { class: Styles::title, "Hello" }
+    }
+}
+```
+
+### Fullstack Server Setup
+
+```rust
+use axum::Router;
+use dioxus::prelude::*;
+
+#[tokio::main]
+async fn main() {
+    let app = Router::new()
+        .serve_static_assets("dist")
+        .serve_dioxus_application(ServeConfig::new(), App);
+
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+```
+
+### Reactivity Gotchas
+
+**Memos in attributes don't subscribe properly:**
+```rust
+// BAD: Won't update
+let style = use_memo(move || format!("color: {}", color()));
+rsx! { div { style: style } }
+
+// GOOD: Direct signal read
+rsx! { div { style: format!("color: {}", color()) } }
+```
+
+**Use individual CSS properties:**
+```rust
+// GOOD: Proper reactivity
+rsx! {
+    p {
+        font_weight: if bold() { "bold" } else { "normal" },
+        text_align: "{align}",
+    }
+}
+```
+
+### Hot-Reload Boundaries
+
+**Instant reload:** Literal values, text, formatted segments, attribute order, template structure
+
+**Requires rebuild:** Rust logic, component structure, control flow conditions, struct field changes
