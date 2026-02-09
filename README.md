@@ -8,6 +8,9 @@ Claude Code plugin marketplace for AI knowledge patches.
 |--------|-------------|
 | **bun** | Bun 1.3.8 knowledge patch - Bun-specific APIs, bun:* modules, Bun.serve(), bundler features |
 | **dioxus** | Dioxus 0.7.x knowledge patch - subsecond hot-patching, WASM splitting, Stores, Manganis |
+| **postgis** | PostGIS 3.5-3.6.1 knowledge patch - spatial functions, geography types, raster operations, topology |
+| **postgresql** | PostgreSQL 17-18.1 knowledge patch - MERGE, JSON functions, virtual generated columns, temporal constraints |
+| **python** | Python 3.13-3.14 knowledge patch - t-strings, deferred annotations, free-threaded Python, zstd |
 | **rust** | Rust 1.85-1.93 knowledge patch - Edition 2024, async closures, let chains, new APIs |
 | **typescript** | TypeScript 5.9+ knowledge patch - import defer, --module node20 |
 

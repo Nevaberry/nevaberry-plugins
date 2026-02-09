@@ -1,0 +1,5 @@
+{
+  "name": "postgis-knowledge-patch",
+  "version": "3.6.1",
+  "description": "PostGIS knowledge patch - updates Claude's knowledge about PostGIS 3.5-3.6.1 features including spatial functions, geography types, raster operations, and topology"
+}

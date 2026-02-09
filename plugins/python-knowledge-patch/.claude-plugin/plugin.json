@@ -1,0 +1,5 @@
+{
+  "name": "python-knowledge-patch",
+  "version": "3.14.0",
+  "description": "Python knowledge patch - updates Claude's knowledge about Python 3.13-3.14 features including t-strings, deferred annotation evaluation, free-threaded Python, subinterpreters, and zstd compression"
+}

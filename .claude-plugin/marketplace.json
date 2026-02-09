@@ -36,6 +36,24 @@
       "source": "./plugins/dioxus-knowledge-patch",
       "description": "Dioxus knowledge patch - updates Claude's knowledge about Dioxus 0.7.3 features including subsecond hot-patching, WASM splitting, Manganis assets, and Stores",
       "category": "development"
+    },
+    {
+      "name": "postgis-knowledge-patch",
+      "source": "./plugins/postgis-knowledge-patch",
+      "description": "PostGIS knowledge patch - updates Claude's knowledge about PostGIS 3.5-3.6.1 features including spatial functions, geography types, raster operations, and topology",
+      "category": "development"
+    },
+    {
+      "name": "postgresql-knowledge-patch",
+      "source": "./plugins/postgresql-knowledge-patch",
+      "description": "PostgreSQL knowledge patch - updates Claude's knowledge about PostgreSQL 17-18.1 features including MERGE, JSON functions, virtual generated columns, and temporal constraints",
+      "category": "development"
+    },
+    {
+      "name": "python-knowledge-patch",
+      "source": "./plugins/python-knowledge-patch",
+      "description": "Python knowledge patch - updates Claude's knowledge about Python 3.13-3.14 features including t-strings, deferred annotation evaluation, free-threaded Python, subinterpreters, and zstd compression",
+      "category": "development"
     }
   ]
 }

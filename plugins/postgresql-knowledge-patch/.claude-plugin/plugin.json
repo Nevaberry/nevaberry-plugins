@@ -1,0 +1,5 @@
+{
+  "name": "postgresql-knowledge-patch",
+  "version": "18.1",
+  "description": "PostgreSQL knowledge patch - updates Claude's knowledge about PostgreSQL 17-18.1 features including MERGE, JSON functions, virtual generated columns, and temporal constraints"
+}
