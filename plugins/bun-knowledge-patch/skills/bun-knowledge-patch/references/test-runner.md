@@ -71,6 +71,18 @@ expect(fn).toHaveBeenCalled();
 mock.clearAllMocks();
 ```
 
+### Auto-Restore with `using`
+
+`mock()` and `spyOn()` support `Symbol.dispose` for automatic cleanup:
+
+```ts
+test("auto-restores spy", () => {
+  using spy = spyOn(obj, "method").mockReturnValue("mocked");
+  expect(obj.method()).toBe("mocked");
+  // spy automatically restored when leaving scope
+});
+```
+
 ### `vi` Global
 
 Vitest's `vi` is available globally:

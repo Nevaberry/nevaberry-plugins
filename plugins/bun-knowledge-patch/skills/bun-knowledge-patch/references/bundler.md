@@ -12,7 +12,8 @@ bun build ./styles.css --outdir=dist     # CSS bundling
 ```sh
 bun build --compile app.ts
 bun build --compile --target=bun-windows-x64 app.ts  # Cross-compile
-bun build --compile --bytecode app.ts                 # Faster startup
+bun build --compile --bytecode app.ts                 # Faster startup (CJS default)
+bun build --compile --bytecode --format=esm app.ts    # ESM bytecode
 ```
 
 ### Programmatic API

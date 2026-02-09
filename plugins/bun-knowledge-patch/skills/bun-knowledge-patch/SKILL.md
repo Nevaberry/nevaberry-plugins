@@ -4,7 +4,7 @@ description: This skill should be used when writing Bun code, using Bun-specific
 license: MIT
 metadata:
   author: Nevaberry
-  version: "1.3.8"
+  version: "1.3.9"
 ---
 
 # Bun 1.2+ Knowledge Patch

@@ -82,6 +82,8 @@ bun --cpu-prof --cpu-prof-dir ./profiles script.js
 
 bun --heap-prof script.js                   # .heapsnapshot
 bun --heap-prof-md script.js                # Markdown report
+
+bun --cpu-prof --cpu-prof-interval 500 script.js  # Sampling interval (μs, default: 1000)
 ```
 
 ## Fetch Proxy
@@ -135,6 +137,22 @@ bun init --react
 bun init --react=tailwind
 bun init --react=shadcn
 ```
+
+## Running Multiple Scripts
+
+```sh
+bun run --parallel build test            # Concurrent with prefixed output
+bun run --sequential build test          # One at a time
+bun run --parallel "build:*"             # Glob-matched names
+bun run --parallel --filter '*' build    # All workspace packages
+bun run --sequential --workspaces build  # Sequential across workspaces
+bun run --parallel --no-exit-on-error --filter '*' test  # Continue on failure
+bun run --parallel --workspaces --if-present build       # Skip missing scripts
+```
+
+Output is prefixed with colored labels (`build | compiling...`). With `--filter`/`--workspaces`, labels include package name (`pkg-a:build | ...`).
+
+**vs `--filter`**: `--filter` respects dependency order (waits for dependents). `--parallel`/`--sequential` do not — better for long-lived watch scripts.
 
 ## Async Stack Traces
 
