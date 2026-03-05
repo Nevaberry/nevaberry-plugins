@@ -4,7 +4,7 @@ description: This skill should be used when writing Bun code, using Bun-specific
 license: MIT
 metadata:
   author: Nevaberry
-  version: "1.3.9"
+  version: "1.3.10"
 ---
 
 # Bun 1.2+ Knowledge Patch
@@ -86,6 +86,7 @@ See `references/package-manager.md` for workspaces, catalogs, linker modes.
 | `--production` | Production HTML build |
 | `--metafile` / `--metafile-md` | Bundle analysis |
 | `--feature=X` | Compile-time flags |
+| `--target=browser` | Self-contained HTML |
 
 See `references/bundler.md` for plugins, JSX config, virtual files.
 

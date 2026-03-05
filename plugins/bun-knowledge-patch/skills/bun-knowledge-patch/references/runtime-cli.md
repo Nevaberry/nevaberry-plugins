@@ -154,6 +154,10 @@ Output is prefixed with colored labels (`build | compiling...`). With `--filter`
 
 **vs `--filter`**: `--filter` respects dependency order (waits for dependents). `--parallel`/`--sequential` do not — better for long-lived watch scripts.
 
+## TC39 Standard ES Decorators
+
+Bun fully supports non-legacy TC39 stage-3 decorators (when `experimentalDecorators` is **not** set in tsconfig). Includes `accessor` keyword, `Symbol.metadata`, `addInitializer`, and correct evaluation order.
+
 ## Async Stack Traces
 
 Stack traces now include async call frames:

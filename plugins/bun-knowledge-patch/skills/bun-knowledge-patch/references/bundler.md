@@ -11,7 +11,8 @@ bun build ./styles.css --outdir=dist     # CSS bundling
 
 ```sh
 bun build --compile app.ts
-bun build --compile --target=bun-windows-x64 app.ts  # Cross-compile
+bun build --compile --target=bun-windows-x64 app.ts    # Cross-compile
+bun build --compile --target=bun-windows-arm64 app.ts  # Windows ARM64
 bun build --compile --bytecode app.ts                 # Faster startup (CJS default)
 bun build --compile --bytecode --format=esm app.ts    # ESM bytecode
 ```
@@ -202,6 +203,35 @@ When building `--format=cjs`:
 | `import.meta.url` | (inlined) |
 | `import.meta.path` | `__filename` |
 | `import.meta.dirname` | `__dirname` |
+
+## Self-Contained HTML (`--target=browser`)
+
+Produces a single HTML file with all JS, CSS, and assets inlined (scripts become inline `<script>`, stylesheets become `<style>`, assets become `data:` URIs). Works via `file://` without a server.
+
+```sh
+bun build --compile --target=browser ./index.html
+```
+
+```ts
+await Bun.build({
+  entrypoints: ["./index.html"],
+  target: "browser",
+  compile: true,
+});
+```
+
+All entrypoints must be `.html` files. Cannot be used with `--splitting`.
+
+## `optimizeImports` - Barrel File Optimization
+
+Skip parsing unused re-exports from barrel files. Automatic for packages with `"sideEffects": false`; explicit for others:
+
+```ts
+await Bun.build({
+  entrypoints: ["./app.ts"],
+  optimizeImports: ["antd", "@mui/material", "lodash-es"],
+});
+```
 
 ## NODE_PATH Support
 
