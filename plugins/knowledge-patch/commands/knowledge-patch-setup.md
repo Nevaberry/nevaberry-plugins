@@ -123,19 +123,28 @@ The target format:
 
 Make sure the `.claude/` directory exists (create if needed). Preserve all existing settings — only add/merge the new `enabledPlugins` entries.
 
-## Step 5: Update CLAUDE.md or AGENTS.md
+## Step 5: Update Instruction Files
 
-Determine which instruction file to update:
+Knowledge patches are enforced through instruction files that AI tools read at session start. Different tools use different files, so write to ALL relevant ones for cross-tool compatibility.
 
-1. Check if `CLAUDE.md` exists in the project root
-2. Check if `AGENTS.md` exists in the project root
-3. If both exist → ask user which to update
-4. If one exists → update that one
-5. If neither exists → ask user which to create (recommend CLAUDE.md)
+### Determine which files to update
+
+Check which instruction files exist in the project root:
+
+| File | Used by |
+|------|---------|
+| `CLAUDE.md` | Claude Code, Cursor |
+| `AGENTS.md` | OpenAI Codex CLI |
+
+**Rules:**
+- If `CLAUDE.md` exists → update it
+- If `AGENTS.md` exists → update it
+- If both exist → update both
+- If neither exists → ask user which to create (can select multiple). Recommend creating both for maximum compatibility.
 
 ### Generate the Knowledge Patches section
 
-Add or replace the `## CRITICAL: Always Load Knowledge Patch Skills` section. Place it at the END of the file, preserving all existing content.
+For each file, add or replace the `## CRITICAL: Always Load Knowledge Patch Skills` section. Place it at the END of the file, preserving all existing content.
 
 **If the section already exists**, replace only that section (from the heading to the next `##` heading or end of file).
 
@@ -144,7 +153,7 @@ Use this template, filling in only the installed patches:
 ```markdown
 ## CRITICAL: Always Load Knowledge Patch Skills
 
-This project uses Nevaberry knowledge patch plugins (configured in `.claude/settings.json`). These plugins contain up-to-date API references, migration guides, and breaking changes for technologies beyond your training data cutoff. **You MUST invoke these skills before any code work, even at 1% relevance:**
+This project uses Nevaberry knowledge patch plugins. These plugins contain up-to-date API references, migration guides, and breaking changes for technologies beyond your training data cutoff. **You MUST invoke these skills before any code work, even at 1% relevance:**
 
 [PATCH LIST HERE]
 
@@ -179,13 +188,14 @@ Knowledge patch setup complete:
     - typescript-knowledge-patch
 
   Settings file: .claude/settings.json
-  Updated: CLAUDE.md
+  Updated: CLAUDE.md, AGENTS.md
 
-  Restart your Claude Code session for patches to take effect.
+  Restart your AI coding tool for patches to take effect.
 ```
 
 ## Important Notes
 
 - This command is idempotent — running it again updates existing configuration
 - Existing patches in settings are preserved; new ones are added alongside them
-- The CLAUDE.md section is replaced entirely to reflect the current set of patches
+- The instruction file sections are replaced entirely to reflect the current set of patches
+- Writing to both CLAUDE.md and AGENTS.md ensures patches work across Claude Code, Codex CLI, and Cursor
