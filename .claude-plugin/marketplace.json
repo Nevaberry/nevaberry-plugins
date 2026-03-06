@@ -8,6 +8,12 @@
   },
   "plugins": [
     {
+      "name": "knowledge-patch",
+      "source": "./plugins/knowledge-patch",
+      "description": "Knowledge patch meta-plugin - auto-detects project technologies, installs matching knowledge patches, and enforces patch content over outdated training data. Run /knowledge-patch-setup to scan your project.",
+      "category": "development"
+    },
+    {
       "name": "typescript-knowledge-patch",
       "source": "./plugins/typescript-knowledge-patch",
       "description": "TypeScript knowledge patch - updates Claude's knowledge about TypeScript 5.9+ features including import defer, --module node20, and TS7 transition",
