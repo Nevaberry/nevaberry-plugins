@@ -151,30 +151,28 @@ For each file, add or replace the `## CRITICAL: Always Load Knowledge Patch Skil
 Use this template, filling in only the installed patches:
 
 ```markdown
-## CRITICAL: Always Load Knowledge Patch Skills
+## Knowledge Patches (CRITICAL)
 
-This project uses Nevaberry knowledge patch plugins. These plugins contain up-to-date API references, migration guides, and breaking changes for technologies beyond your training data cutoff. **You MUST invoke these skills before any code work, even at 1% relevance:**
+MUST invoke these patch skills before writing code — training data is outdated for these:
 
 [PATCH LIST HERE]
-
-Without these patches you will generate outdated code that won't compile or uses deprecated APIs.
 ```
 
 ### Patch list format
 
-Each installed patch gets a line with its trigger description:
+Each installed patch gets a **short** line:
 
-| Patch | Line to generate |
-|-------|-----------------|
-| bun-knowledge-patch | `- \`bun-knowledge-patch\` — any Bun runtime, package management, bundling, testing` |
-| typescript-knowledge-patch | `- \`typescript-knowledge-patch\` — any TypeScript type system, compiler options, new syntax` |
-| nextjs-knowledge-patch | `- \`nextjs-knowledge-patch\` — any Next.js routing, App Router, server actions, caching` |
-| nodejs-knowledge-patch | `- \`nodejs-knowledge-patch\` — any Node.js APIs, built-in modules, runtime features` |
-| python-knowledge-patch | `- \`python-knowledge-patch\` — any Python 3.13+ features, typing, standard library` |
-| rust-knowledge-patch | `- \`rust-knowledge-patch\` — any Rust 2025 edition, new language features, std library` |
-| dioxus-knowledge-patch | `- \`dioxus-knowledge-patch\` — any Dioxus components, signals, RSX, fullstack` |
-| postgresql-knowledge-patch | `- \`postgresql-knowledge-patch\` — any PostgreSQL queries, MERGE, JSON functions, extensions` |
-| postgis-knowledge-patch | `- \`postgis-knowledge-patch\` — any spatial queries, geography types, GIS functions` |
+| Patch | Line |
+|-------|------|
+| bun-knowledge-patch | `- \`bun-knowledge-patch\` — Bun runtime, bundling, testing` |
+| typescript-knowledge-patch | `- \`typescript-knowledge-patch\` — TypeScript type system, compiler, new syntax` |
+| nextjs-knowledge-patch | `- \`nextjs-knowledge-patch\` — Next.js App Router, server actions, caching` |
+| nodejs-knowledge-patch | `- \`nodejs-knowledge-patch\` — Node.js APIs, built-in modules` |
+| python-knowledge-patch | `- \`python-knowledge-patch\` — Python 3.13+ features, typing, stdlib` |
+| rust-knowledge-patch | `- \`rust-knowledge-patch\` — Rust 2025 edition, new language features` |
+| dioxus-knowledge-patch | `- \`dioxus-knowledge-patch\` — Dioxus components, signals, RSX, fullstack` |
+| postgresql-knowledge-patch | `- \`postgresql-knowledge-patch\` — PostgreSQL queries, MERGE, JSON functions` |
+| postgis-knowledge-patch | `- \`postgis-knowledge-patch\` — spatial queries, geography types` |
 
 ## Step 6: Show Summary
 
