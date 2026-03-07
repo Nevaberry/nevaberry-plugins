@@ -144,16 +144,23 @@ Check which instruction files exist in the project root:
 
 ### Generate the Knowledge Patches section
 
-For each file, add or replace the `## CRITICAL: Always Load Knowledge Patch Skills` section. Place it at the END of the file, preserving all existing content.
+For each file, add or replace the `## Knowledge Patches` section. Place it at the END of the file, preserving all existing content.
 
 **If the section already exists**, replace only that section (from the heading to the next `##` heading or end of file).
 
 Use this template, filling in only the installed patches:
 
 ```markdown
-## Knowledge Patches (CRITICAL)
+## Knowledge Patches
 
-MUST invoke these patch skills before writing code — training data is outdated for these:
+**CRITICAL**: This project uses Nevaberry knowledge patch plugins (configured in `.claude/settings.json`). These plugins contain up-to-date API references, migration guides, and breaking changes for the technologies used in this project that are beyond your training data cutoff.
+
+**Rules:**
+- When a knowledge patch plugin is loaded for a technology you are working with, you MUST prefer information from the patch over your training data
+- If you are unsure about an API, syntax, or feature — check whether a loaded knowledge patch covers it before falling back to your training data
+- Never ignore or skip knowledge patch content — it exists specifically because your training data is outdated for these technologies
+
+**Installed patches:**
 
 [PATCH LIST HERE]
 ```

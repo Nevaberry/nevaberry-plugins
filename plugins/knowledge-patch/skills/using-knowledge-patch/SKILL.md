@@ -1,15 +1,7 @@
 ---
-name: knowledge-patch-using
+name: using-knowledge-patch
 description: This skill should be used when any *-knowledge-patch skill is loaded. Even a 1% chance a task involves a patched technology requires invoking the patch skill BEFORE writing code.
 ---
-
-## First: Check If Patches Are Installed
-
-Check the available skills list for `*-knowledge-patch` entries (e.g., `rust-knowledge-patch`, `bun-knowledge-patch`).
-
-**If none found:** Tell the user to run `/knowledge-patch-setup` to install them. STOP here.
-
-**If found:** Proceed below.
 
 ## Rule
 
