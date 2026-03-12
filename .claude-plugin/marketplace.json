@@ -60,6 +60,12 @@
       "source": "./plugins/python-knowledge-patch",
       "description": "Python knowledge patch - updates Claude's knowledge about Python 3.13-3.14 features including t-strings, deferred annotation evaluation, free-threaded Python, subinterpreters, and zstd compression",
       "category": "development"
+    },
+    {
+      "name": "claude-memory-symlink",
+      "source": "./plugins/claude-memory-symlink",
+      "description": "Creates a symlink so .claude/memory/ in your project points to Claude Code's system memory directory — browse and edit memory files from your project tree. Run /claude-memory-symlink to set up.",
+      "category": "development"
     }
   ]
 }
