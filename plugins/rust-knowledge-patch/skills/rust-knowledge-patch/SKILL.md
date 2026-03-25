@@ -1,149 +1,191 @@
 ---
 name: rust-knowledge-patch
-description: This skill should be used when writing Rust code, using async closures, let chains, Edition 2024 features, new collection methods like extract_if, integer arithmetic methods, or any Rust features from 2024-2026.
+description: This skill should be used when writing Rust code with features from after Claude Opus 4.6's training cutoff (Rust 1.84–1.94, including Rust 2024 Edition).
+version: "1.94.0"
 license: MIT
 metadata:
   author: Nevaberry
-  version: "1.93"
 ---
 
-# Rust 1.85-1.93 Knowledge Patch
+# Rust Knowledge Patch
 
-Claude's baseline knowledge covers Rust through 1.84. This skill provides features from 1.85 (Feb 2025) through 1.93 (Jan 2026).
+Covers Rust 1.84–1.94 (2025-01-09 through 2026-03-05). Claude Opus 4.6 knows Rust through 1.83 and the 2021 Edition. It is **unaware** of the Rust 2024 Edition and any of the features below.
 
-## Quick Reference
+## Index
 
-### Edition 2024 (Major Changes)
+| Topic | Reference | Key features |
+|---|---|---|
+| Rust 2024 Edition | [references/rust-2024-edition.md](references/rust-2024-edition.md) | Edition migration, breaking changes, let chains |
+| Language features | [references/language-features.md](references/language-features.md) | Async closures, trait upcasting, naked functions, cfg booleans |
+| Collections & iterators | [references/collections.md](references/collections.md) | `extract_if`, `as_chunks`, `array_windows`, slice splits |
+| Numeric methods | [references/numerics.md](references/numerics.md) | `isqrt`, `midpoint`, `strict_*`, `sub_signed`, const floats |
+| Memory & unsafe | [references/memory.md](references/memory.md) | Provenance APIs, `NonNull`, `MaybeUninit`, smart ptr alloc |
+| Std library additions | [references/std-additions.md](references/std-additions.md) | Pipes, file locking, sync, paths, `Duration`, `fmt::from_fn` |
+| Cargo & toolchain | [references/cargo.md](references/cargo.md) | Resolver v3, `publish --workspace`, LLD linker, TOML 1.1 |
+| Lints & diagnostics | [references/lints.md](references/lints.md) | New default warnings, never-type lints, diagnostic hints |
 
-| Change | Migration |
-|--------|-----------|
-| `unsafe extern "C" {}` | Add `unsafe` to extern blocks |
-| `#[unsafe(no_mangle)]` | Wrap unsafe attrs in `unsafe()` |
-| `unsafe {}` in unsafe fns | Explicit unsafe blocks required |
-| `static mut` denied | Use atomics/sync primitives |
-| `gen` reserved | Rename identifiers |
-| `set_var`/`remove_var` unsafe | Wrap in `unsafe {}` |
+---
 
-**Let chains** (Edition 2024 only):
+## Rust 2024 Edition — Breaking Changes (inline)
+
+Enable with `edition = "2024"` in `Cargo.toml`. Migrate with `cargo fix --edition`.
+
+| Change | Before (2021) | After (2024) |
+|---|---|---|
+| `extern` blocks | `extern "C" { fn foo(); }` | `unsafe extern "C" { fn foo(); }` |
+| Link attributes | `#[no_mangle]` | `#[unsafe(no_mangle)]` |
+| `unsafe fn` bodies | implicit unsafe inside | require explicit `unsafe { }` |
+| `static mut` refs | warned | hard error → use `&raw const`/`&raw mut` |
+| `set_var`/`remove_var` | safe | now `unsafe` |
+| `gen` keyword | valid identifier | reserved |
+| `impl Trait` lifetime capture | opt-in | captures all in-scope lifetimes by default |
+| `Future`/`IntoFuture` in prelude | not in prelude | added (may cause name conflicts) |
+
 ```rust
-if let Some(x) = opt && x > 0 && let Some(y) = other { ... }
+// 2021 → 2024 migration examples
+
+// extern blocks
+unsafe extern "C" {
+    fn foo();
+    safe fn bar();  // opt-in safe: callable without unsafe
+}
+
+// attributes on linked items
+#[unsafe(no_mangle)]
+pub extern "C" fn my_fn() {}
+
+// unsafe fn bodies
+unsafe fn helper() {
+    unsafe { some_unsafe_op(); }  // now required
+}
+
+// static mut: use raw refs instead
+static mut GLOBAL: u32 = 0;
+let r = &raw const GLOBAL;  // safe in 2024, was safe since 1.84
+
+// impl Trait lifetime restriction
+fn foo<'a>(x: &'a str) -> impl Display + use<'a> { x }  // restrict captures
 ```
 
-See `references/edition-2024.md` for full migration guide.
+---
 
-### Async
+## Let Chains — 1.88 (Rust 2024 Edition only)
 
-- **Async closures**: `async || {}` with `AsyncFn`, `AsyncFnMut`, `AsyncFnOnce` traits
-- **`OnceLock::wait`**: Block until initialization completes
-- **`RwLockWriteGuard::downgrade`**: Write → read lock without releasing
+Chain `let` bindings with `&&` in `if`/`while`. Earlier bindings are available in later conditions.
 
-See `references/async-and-concurrency.md`.
+```rust
+if let Channel::Stable(v) = release_info()
+    && let Semver { major, minor, .. } = v
+    && major == 1
+    && minor == 88
+{
+    println!("let chains stabilized here");
+}
 
-### Collections
+while let Some(x) = iter.next() && x < 10 {
+    process(x);
+}
+```
 
-| Method | Types |
-|--------|-------|
-| `extract_if` | Vec, LinkedList, HashMap, HashSet, BTreeMap, BTreeSet |
-| `pop_if` | Vec |
-| `pop_front_if` / `pop_back_if` | VecDeque |
-| `get_disjoint_mut` | slices, HashMap |
-| `Cell::update` | Cell |
+---
 
-**Tuple collection**: `(Vec<_>, Vec<_>) = iter.map(\|x\| (a, b)).collect()`
+## Async Closures — 1.85
 
-See `references/collections.md`.
+`async || {}` can borrow captures across `.await`. Unlike `|| async {}`, the inner future holds a borrow into the closure's environment. New traits: `AsyncFn`, `AsyncFnMut`, `AsyncFnOnce`.
 
-### Integers
+```rust
+let mut vec: Vec<String> = vec![];
+let closure = async || {
+    vec.push(ready(String::from("")).await);  // borrows vec across await point
+};
 
+// Higher-ranked async bounds — not expressible with Fn + Future:
+async fn call_it(_: impl for<'a> AsyncFn(&'a u8)) {}
+```
+
+---
+
+## Trait Upcasting — 1.86
+
+Coerce `&dyn Trait` to `&dyn Supertrait` (or any pointer wrapper). Previously required manual `as_supertrait()` workarounds.
+
+```rust
+trait Trait: Supertrait {}
+trait Supertrait {}
+
+fn upcast(x: &dyn Trait) -> &dyn Supertrait { x }
+// Also: Arc<dyn Trait> -> Arc<dyn Supertrait>
+
+// Downcasting without external crates:
+use std::any::Any;
+trait MyAny: Any {}
+impl dyn MyAny {
+    fn downcast_ref<T: 'static>(&self) -> Option<&T> {
+        (self as &dyn Any).downcast_ref()
+    }
+}
+```
+
+---
+
+## Quick Method Reference
+
+### New in 1.84
 | Method | Description |
-|--------|-------------|
-| `midpoint` | Exact midpoint without overflow |
-| `is_multiple_of` | Divisibility check |
-| `unbounded_shl/shr` | Return 0 on overflow |
-| `cast_signed/unsigned` | Bit reinterpretation |
-| `*_sub_signed` | Subtract signed from unsigned |
-| `strict_*` | Panic on overflow (release too) |
-| `carrying_*/borrowing_*` | Extended precision arithmetic |
-| `unchecked_*` | UB on overflow (perf-critical) |
+|---|---|
+| `n.isqrt()` / `n.checked_isqrt()` | Integer square root (floor); checked returns `None` for negative |
+| `ptr::dangling::<T>()` | Non-null, well-aligned dangling pointer |
+| `ptr.addr()` / `.with_addr(a)` / `.map_addr(f)` | Pointer provenance-preserving address ops |
+| `ptr.expose_provenance()` / `ptr::with_exposed_provenance(a)` | Round-trip through integer with provenance |
+| `ptr::without_provenance(a)` | Pointer with no provenance (sentinel values) |
+| `&raw const *p` | Now safe (was unsafe) |
 
-See `references/integers-and-arithmetic.md`.
+### New in 1.85–1.86
+| Method | Description |
+|---|---|
+| `a.midpoint(b)` | Overflow-safe `(a+b)/2` for floats and unsigned ints |
+| `v.pop_if(\|x\| ...)` | Pop last element if predicate holds |
+| `v.get_disjoint_mut([i, j])` | Multiple `&mut` into slice/`HashMap` simultaneously |
+| `lock.wait()` | Block until `OnceLock`/`Once` is initialized |
 
-### Slices & Arrays
+### New in 1.87–1.88
+| Method | Description |
+|---|---|
+| `std::io::pipe()` | Returns `(PipeReader, PipeWriter)` |
+| `v.extract_if(.., \|x\| ...)` | Drain matching elements (lazy iterator) |
+| `s.split_off(n)` / `split_off_first()` / `split_off_last()` | Split slice, return tuple |
+| `os_str.display()` | Lossily display `OsStr` / `OsString` |
+| `n.unbounded_shl(k)` / `unbounded_shr(k)` | Shift returning 0 instead of panic when `k ≥ bits` |
+| `s.as_chunks::<N>()` / `as_rchunks::<N>()` | Fixed-size array chunks with remainder |
+| `map.extract_if(\|k,v\| ...)` | `HashMap`/`HashSet` drain by predicate |
+| `cell.update(\|x\| ...)` | Update `Cell<T>` in place, return new value |
 
-- **Chunking**: `as_chunks`, `as_rchunks` → `(&[[T; N]], &[T])`
-- **Conversion**: `slice.as_array::<N>()` → `Option<&[T; N]>`
-- **Boundaries**: `str.ceil_char_boundary(n)`, `floor_char_boundary(n)`
-- **Const**: `reverse`, `rotate_left`, `rotate_right`
+### New in 1.89–1.91
+| Method | Description |
+|---|---|
+| `f.lock()` / `f.try_lock()` / `f.unlock()` | Advisory file locking (no `fs2` needed) |
+| `r.flatten()` | `Result<Result<T,E>,E>` → `Result<T,E>` |
+| `NonNull::from_ref(&x)` / `from_mut(&mut x)` | Safe `NonNull` from references |
+| `x.checked_sub_signed(n)` etc. | Subtract signed from unsigned (`checked_`, `wrapping_`, `saturating_`, `overflowing_`) |
+| `n.strict_add(m)` etc. | Panic on overflow in debug AND release |
+| `s.ceil_char_boundary(i)` / `floor_char_boundary(i)` | Nearest valid UTF-8 boundary |
+| `Path::file_prefix()` | Stem with ALL extensions stripped |
+| `p.add_extension("gz")` | Append extension (unlike `set_extension` which replaces) |
+| `Duration::from_mins(n)` / `from_hours(n)` | Convenience constructors |
+| `Path == "/some/str"` | `PartialEq<str>` / `PartialEq<String>` now implemented |
 
-See `references/slices-and-arrays.md`.
-
-### Strings & Paths
-
-- **`Path::file_prefix`**: Filename without ANY extensions
-- **`PathBuf::add_extension`**: Add without replacing
-- **`OsStr::display`**: Lossy UTF-8 display
-- **`String::into_raw_parts`**: Decompose to `(ptr, len, cap)`
-
-See `references/strings-and-paths.md`.
-
-### Pointers & Memory
-
-- **Trait upcasting**: `&dyn Derived` → `&dyn Base` automatic
-- **`NonNull` provenance**: `from_ref`, `without_provenance`, `expose_provenance`
-- **`MaybeUninit` slices**: `write_copy_of_slice`, `assume_init_ref`
-- **Zeroed constructors**: `Box::new_zeroed()`, `Arc::new_zeroed()`
-
-See `references/pointers-and-memory.md`.
-
-### Assembly & SIMD
-
-- **Safe `#[target_feature]`**: No unsafe needed for decorated fns
-- **`asm!` labels**: Jump to Rust code blocks
-- **`asm!` cfg**: `#[cfg(...)]` on individual lines
-- **Naked functions**: `#[unsafe(naked)]` + `naked_asm!`
-
-See `references/assembly-and-simd.md`.
-
-### I/O
-
-- **`io::pipe()`**: Cross-platform anonymous pipes
-- **`File::lock/unlock`**: Advisory file locking
-- **`i128/u128` in FFI**: No more warnings
-
-See `references/io-and-process.md`.
-
-### Misc
-
-- **`Result::flatten`**: `Result<Result<T,E>,E>` → `Result<T,E>`
-- **`fmt::from_fn`**: Display from closure
-- **`Duration::from_mins/hours`**: Convenience constructors
-- **Const `TypeId::of`**: Compile-time type IDs
-- **Const float rounding**: `floor`, `ceil`, `round` in const
-
-See `references/misc-apis.md`.
-
-### Cargo
-
-- **LLD default** (x86_64 Linux): Faster linking
-- **`cargo publish --workspace`**: Multi-crate publishing
-- **Auto cache cleaning**: 3mo network, 1mo local
-
-See `references/cargo-and-tooling.md`.
-
-## Reference Files
-
-Detailed documentation in `references/`:
-
-| File | Contents |
-|------|----------|
-| `edition-2024.md` | Full Edition 2024 migration guide |
-| `async-and-concurrency.md` | Async closures, locks, atomics |
-| `integers-and-arithmetic.md` | All integer methods |
-| `collections.md` | extract_if, pop_if, disjoint_mut |
-| `slices-and-arrays.md` | Chunking, conversion, const ops |
-| `strings-and-paths.md` | Path/String APIs |
-| `pointers-and-memory.md` | Upcasting, provenance, MaybeUninit |
-| `assembly-and-simd.md` | asm!, target_feature, naked fns |
-| `io-and-process.md` | Pipes, FFI, file locking |
-| `misc-apis.md` | Floats, Duration, formatting, cfg |
-| `cargo-and-tooling.md` | LLD, workspace publish, cache |
+### New in 1.92–1.94
+| Method | Description |
+|---|---|
+| `RwLockWriteGuard::downgrade(guard)` | Atomically write→read lock downgrade |
+| `Box::new_zeroed()` / `new_zeroed_slice(n)` | Zero-initialized allocation (also `Rc`, `Arc`) |
+| `s.into_raw_parts()` / `v.into_raw_parts()` | Decompose `String`/`Vec` to `(ptr, len, cap)` |
+| `Duration::from_nanos_u128(n)` | Like `from_nanos` but accepts `u128` |
+| `s.as_chunks::<N>()` | (also `as_array::<N>()` in 1.93: slice → fixed-size array ref) |
+| `fmt::from_fn(\|f\| ...)` | `Display` value from closure, no new type needed |
+| `dq.pop_front_if(\|x\| ...)` / `pop_back_if(...)` | Conditional pop from `VecDeque` |
+| `cell.get()` on `LazyCell`/`LazyLock` | `Option<&T>` without forcing init |
+| `LazyCell::force_mut(&mut cell)` | Force init, return `&mut T` |
+| `iter.next_if_map(\|x\| ...)` | Peek + transform; advance only if `Some` |
+| `v.element_offset(&v[i])` | Index of element by reference |
+| `f64::consts::EULER_GAMMA` / `GOLDEN_RATIO` | New float constants |
