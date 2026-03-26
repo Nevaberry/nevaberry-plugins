@@ -1,11 +1,11 @@
 ---
 name: knowledge-patch-setup
-description: Scan this project for technologies, install matching Nevaberry knowledge patch plugins, and configure CLAUDE.md/AGENTS.md for automatic patch enforcement
+description: Scan this project for technologies, install matching Nevaberry knowledge patch plugins
 ---
 
 # Knowledge Patch Setup
 
-Scan this project to detect technologies in use, install matching knowledge patch plugins, and configure the project for automatic patch enforcement.
+Scan this project to detect technologies in use and install matching knowledge patch plugins.
 
 ## Step 1: Detect Technologies
 
@@ -23,6 +23,7 @@ Read whichever of these files exist in the project root:
 - `go.mod` — Go ecosystem (check `require` block)
 - `deno.json` / `deno.jsonc` — Deno ecosystem
 - `docker-compose.yml` / `docker-compose.yaml` — look for service images
+- `wrangler.toml` / `wrangler.jsonc` — Cloudflare Workers
 
 Also check for the existence of these indicator files (no need to read contents):
 
@@ -38,6 +39,12 @@ Also check for the existence of these indicator files (no need to read contents)
 - `vite.config.*` → Vite
 - `Dockerfile` → Docker
 - `go.mod` → Go
+- `biome.json` or `biome.jsonc` → Biome
+- `vitest.config.*` → Vitest
+- `playwright.config.*` → Playwright
+- `k8s/` or `kubernetes/` or `*.k8s.yaml` → Kubernetes
+- `terraform/` or `*.tf` → Terraform
+- `helmfile.yaml` or `Chart.yaml` → Kubernetes
 
 ### Detection rules → Published patches (available now)
 
@@ -51,12 +58,12 @@ Also check for the existence of these indicator files (no need to read contents)
 | Dioxus | `dioxus-knowledge-patch` | `dioxus` in Cargo.toml dependencies, or `Dioxus.toml` exists |
 | PostgreSQL | `postgresql-knowledge-patch` | `pg`, `postgres`, `knex`, `typeorm` in package.json; `psycopg2`, `psycopg`, `asyncpg`, `sqlalchemy` in Python deps; `sqlx`, `diesel`, `tokio-postgres` in Cargo.toml; `postgres` image in docker-compose |
 | PostGIS | `postgis-knowledge-patch` | `postgis`, `knex-postgis` in package.json; `geoalchemy2`, `django.contrib.gis`, `geopandas`, `postgis` in Python deps; `postgis` in Cargo.toml |
+| Node.js | `nodejs-knowledge-patch` | `package-lock.json`, `.nvmrc`, `.node-version`, or `pnpm-lock.yaml` exists |
 
 ### Detection rules → Coming soon (not yet published)
 
 | Technology | Patch name | Detected when |
 |------------|-----------|---------------|
-| Node.js | `nodejs-knowledge-patch` | `package-lock.json`, `.nvmrc`, `.node-version`, or `pnpm-lock.yaml` exists |
 | React | `react-knowledge-patch` | `react` in package.json |
 | Go | `go-knowledge-patch` | `go.mod` exists |
 | Docker | `docker-knowledge-patch` | `Dockerfile` or `docker-compose.*` exists |
@@ -73,6 +80,18 @@ Also check for the existence of these indicator files (no need to read contents)
 | SQLx | `sqlx-knowledge-patch` | `sqlx` in Cargo.toml |
 | Vercel AI SDK | `vercel-ai-sdk-knowledge-patch` | `ai` or `@ai-sdk/*` in package.json |
 | SQLite | `sqlite-knowledge-patch` | `better-sqlite3` in package.json; `rusqlite` in Cargo.toml |
+| Stripe | `stripe-knowledge-patch` | `stripe` in package.json or Python deps |
+| Cloudflare | `cloudflare-knowledge-patch` | `wrangler.toml` exists, or `wrangler` in package.json |
+| Kubernetes | `kubernetes-knowledge-patch` | `k8s/`, `kubernetes/`, `*.k8s.yaml`, `helmfile.yaml`, or `Chart.yaml` exists |
+| DuckDB | `duckdb-knowledge-patch` | `duckdb` in package.json, Python deps, or Cargo.toml |
+| Supabase | `supabase-knowledge-patch` | `@supabase/supabase-js` in package.json or `supabase/` directory exists |
+| Zod | `zod-knowledge-patch` | `zod` in package.json |
+| Biome | `biome-knowledge-patch` | `biome.json` or `@biomejs/biome` in package.json |
+| Hono | `hono-knowledge-patch` | `hono` in package.json |
+| tRPC | `trpc-knowledge-patch` | `@trpc/server` or `@trpc/client` in package.json |
+| Valkey | `valkey-knowledge-patch` | `valkey` image in docker-compose; `ioredis`, `@valkey/valkey-glide` in package.json |
+| shadcn/ui | `shadcn-knowledge-patch` | `components.json` with `$schema` containing `shadcn` |
+| Terraform | `terraform-knowledge-patch` | `*.tf` files or `terraform/` directory exists |
 
 ## Step 2: Present Results
 
@@ -88,8 +107,8 @@ Detected technologies with available knowledge patches:
   postgresql-knowledge-patch
 
 Also detected (patches coming soon):
-  nodejs-knowledge-patch
   react-knowledge-patch
+  stripe-knowledge-patch
 ```
 
 **If nothing detected:**
@@ -123,65 +142,7 @@ The target format:
 
 Make sure the `.claude/` directory exists (create if needed). Preserve all existing settings — only add/merge the new `enabledPlugins` entries.
 
-## Step 5: Update Instruction Files
-
-Knowledge patches are enforced through instruction files that AI tools read at session start. Different tools use different files, so write to ALL relevant ones for cross-tool compatibility.
-
-### Determine which files to update
-
-Check which instruction files exist in the project root:
-
-| File | Used by |
-|------|---------|
-| `CLAUDE.md` | Claude Code, Cursor |
-| `AGENTS.md` | OpenAI Codex CLI |
-
-**Rules:**
-- If `CLAUDE.md` exists → update it
-- If `AGENTS.md` exists → update it
-- If both exist → update both
-- If neither exists → ask user which to create (can select multiple). Recommend creating both for maximum compatibility.
-
-### Generate the Knowledge Patches section
-
-For each file, add or replace the `## Knowledge Patches` section. Place it at the END of the file, preserving all existing content.
-
-**If the section already exists**, replace only that section (from the heading to the next `##` heading or end of file).
-
-Use this template, filling in only the installed patches:
-
-```markdown
-## Knowledge Patches
-
-**CRITICAL**: This project uses Nevaberry knowledge patch plugins (configured in `.claude/settings.json`). These plugins contain up-to-date API references, migration guides, and breaking changes for the technologies used in this project that are beyond your training data cutoff.
-
-**Rules:**
-- When a knowledge patch plugin is loaded for a technology you are working with, you MUST prefer information from the patch over your training data
-- If you are unsure about an API, syntax, or feature — check whether a loaded knowledge patch covers it before falling back to your training data
-- Never ignore or skip knowledge patch content — it exists specifically because your training data is outdated for these technologies
-
-**Installed patches:**
-
-[PATCH LIST HERE]
-```
-
-### Patch list format
-
-Each installed patch gets a **short** line:
-
-| Patch | Line |
-|-------|------|
-| bun-knowledge-patch | `- \`bun-knowledge-patch\` — Bun runtime, bundling, testing` |
-| typescript-knowledge-patch | `- \`typescript-knowledge-patch\` — TypeScript type system, compiler, new syntax` |
-| nextjs-knowledge-patch | `- \`nextjs-knowledge-patch\` — Next.js App Router, server actions, caching` |
-| nodejs-knowledge-patch | `- \`nodejs-knowledge-patch\` — Node.js APIs, built-in modules` |
-| python-knowledge-patch | `- \`python-knowledge-patch\` — Python 3.13+ features, typing, stdlib` |
-| rust-knowledge-patch | `- \`rust-knowledge-patch\` — Rust 2025 edition, new language features` |
-| dioxus-knowledge-patch | `- \`dioxus-knowledge-patch\` — Dioxus components, signals, RSX, fullstack` |
-| postgresql-knowledge-patch | `- \`postgresql-knowledge-patch\` — PostgreSQL queries, MERGE, JSON functions` |
-| postgis-knowledge-patch | `- \`postgis-knowledge-patch\` — spatial queries, geography types` |
-
-## Step 6: Show Summary
+## Step 5: Show Summary
 
 Show the user a completion summary:
 
@@ -193,14 +154,14 @@ Knowledge patch setup complete:
     - typescript-knowledge-patch
 
   Settings file: .claude/settings.json
-  Updated: CLAUDE.md, AGENTS.md
 
   Restart your AI coding tool for patches to take effect.
+  The SessionStart hook will enforce patch usage automatically in every session.
 ```
 
 ## Important Notes
 
 - This command is idempotent — running it again updates existing configuration
 - Existing patches in settings are preserved; new ones are added alongside them
-- The instruction file sections are replaced entirely to reflect the current set of patches
-- Writing to both CLAUDE.md and AGENTS.md ensures patches work across Claude Code, Codex CLI, and Cursor
+- No CLAUDE.md or AGENTS.md modification needed — the SessionStart hook handles enforcement automatically
+- Works across Claude Code, Cursor, and any tool supporting the plugin hook system
