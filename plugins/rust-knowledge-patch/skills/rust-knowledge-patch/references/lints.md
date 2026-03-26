@@ -6,11 +6,15 @@
 
 ```rust
 // Before (now warns):
-extern { fn foo(); }
-extern fn bar() {}
+extern "C" {
+    fn foo();
+}
+extern "C" fn bar() {}
 
 // After:
-extern "C" { fn foo(); }
+extern "C" {
+    fn foo();
+}
 extern "C" fn bar() {}
 ```
 

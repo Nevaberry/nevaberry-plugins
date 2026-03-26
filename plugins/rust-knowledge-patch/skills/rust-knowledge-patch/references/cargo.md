@@ -30,8 +30,8 @@ Publish all workspace crates in correct dependency order with a single command.
 
 ```bash
 cargo publish --workspace
-cargo publish --workspace --dry-run    # verify without publishing
-cargo publish --workspace --no-verify  # skip build check
+cargo publish --workspace --dry-run   # verify without publishing
+cargo publish --workspace --no-verify # skip build check
 ```
 
 Crates are published in topological order (dependencies before dependents). Fails if any crate fails to publish.
@@ -53,8 +53,8 @@ rustflags = ["-Clinker-features=-lld"]
 ```toml
 # .cargo/config.toml
 include = [
-    { path = "ci.toml" },
-    { path = "local.toml", optional = true },  # ignored if missing
+  { path = "ci.toml" },
+  { path = "local.toml", optional = true }, # ignored if missing
 ]
 ```
 

@@ -28,11 +28,11 @@ use std::fs::File;
 
 let f = File::open("data.txt")?;
 
-f.lock()?;           // exclusive lock — blocks until acquired
-f.lock_shared()?;    // shared (read) lock — blocks until acquired
-f.try_lock()?;       // non-blocking; returns Err if already locked
+f.lock()?; // exclusive lock — blocks until acquired
+f.lock_shared()?; // shared (read) lock — blocks until acquired
+f.try_lock()?; // non-blocking; returns Err if already locked
 f.try_lock_shared()?;
-f.unlock()?;         // explicit unlock (also unlocked on drop)
+f.unlock()?; // explicit unlock (also unlocked on drop)
 ```
 
 ## `OsStr::display()` / `OsString::display()` — 1.87
@@ -168,8 +168,8 @@ Create a `Display`/`Debug`-implementing value from a closure, without defining a
 use std::fmt;
 
 let val = fmt::from_fn(|f| write!(f, "hello {}", 42));
-println!("{val}");          // "hello 42"
-let s = format!("{val}");   // "hello 42"
+println!("{val}"); // "hello 42"
+let s = format!("{val}"); // "hello 42"
 
 // Useful for lazy formatting in log calls:
 log::debug!("{}", fmt::from_fn(|f| expensive_format(f)));

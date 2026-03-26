@@ -31,15 +31,15 @@ let evens: HashSet<_> = set.extract_if(|x| x % 2 == 0).collect();
 ```rust
 let s = [1, 2, 3, 4, 5];
 
-let (left, right) = s.split_off(2);       // (&[1,2], &[3,4,5])
-let (first, rest) = s.split_off_first();  // (&1, &[2,3,4,5])
-let (init, last)  = s.split_off_last();   // (&[1,2,3,4], &5)
+let (left, right) = s.split_off(2); // ({code}[1,2], {code}[3,4,5])
+let (first, rest) = s.split_off_first(); // ({code}1, {code}[2,3,4,5])
+let (init, last) = s.split_off_last(); // ({code}[1,2,3,4], {code}5)
 
 // Mutable variants:
 let mut s = [1, 2, 3, 4, 5];
 let (left, right) = s.split_off_mut(2);
 let (first, rest) = s.split_off_first_mut();
-let (init, last)  = s.split_off_last_mut();
+let (init, last) = s.split_off_last_mut();
 ```
 
 ## `slice::as_chunks` / `as_rchunks` — 1.88
@@ -51,11 +51,11 @@ let s = [1u8, 2, 3, 4, 5];
 
 // From the start:
 let (chunks, remainder) = s.as_chunks::<2>();
-// chunks: &[[1,2], [3,4]], remainder: &[5]
+// chunks: {code}[[1,2], [3,4]], remainder: {code}[5]
 
 // From the end:
 let (remainder, chunks) = s.as_rchunks::<2>();
-// remainder: &[1], chunks: &[[2,3], [4,5]]
+// remainder: {code}[1], chunks: {code}[[2,3], [4,5]]
 
 // Mutable:
 let mut s = [1u8, 2, 3, 4, 5];
@@ -125,7 +125,7 @@ Pops the last element only if the predicate returns true.
 ```rust
 let mut v = vec![1, 2, 3];
 assert_eq!(v.pop_if(|x| *x > 2), Some(3));
-assert_eq!(v.pop_if(|x| *x > 2), None);  // 2 doesn't satisfy > 2
+assert_eq!(v.pop_if(|x| *x > 2), None); // 2 doesn't satisfy > 2
 ```
 
 ## `VecDeque::pop_front_if` / `pop_back_if` — 1.93
@@ -134,8 +134,8 @@ Conditional pop from either end.
 
 ```rust
 let mut dq = VecDeque::from([1, 2, 3]);
-assert_eq!(dq.pop_front_if(|&x| x < 2), Some(1));
-assert_eq!(dq.pop_back_if(|&x| x > 5), None);
+assert_eq!(dq.pop_front_if(|{code}x| x < 2), Some(1));
+assert_eq!(dq.pop_back_if(|{code}x| x > 5), None);
 ```
 
 ## `Cell::update` — 1.88
@@ -144,7 +144,7 @@ Update a `Cell` value in-place with a function, returning the new value.
 
 ```rust
 let c = Cell::new(5i32);
-let new = c.update(|x| x * 2);  // new = 10, c.get() = 10
+let new = c.update(|x| x * 2); // new = 10, c.get() = 10
 // Replaces: c.set(c.get() * 2)
 ```
 
@@ -170,6 +170,6 @@ Returns the index of a slice element by reference.
 
 ```rust
 let v = [10, 20, 30];
-assert_eq!(v.element_offset(&v[1]), Some(1));
+assert_eq!(v.element_offset({code}v[1]), Some(1));
 // Returns None if the reference is not within the slice
 ```

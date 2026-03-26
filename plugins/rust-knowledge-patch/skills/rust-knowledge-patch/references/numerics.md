@@ -6,7 +6,7 @@ Integer square root (floor). Available on all integer types.
 
 ```rust
 assert_eq!(16u32.isqrt(), 4);
-assert_eq!(17u32.isqrt(), 4);   // floors
+assert_eq!(17u32.isqrt(), 4); // floors
 assert_eq!(0u32.isqrt(), 0);
 
 // Signed: checked variant returns None for negative
@@ -20,12 +20,12 @@ Overflow-safe `(a + b) / 2` for floats and unsigned integers.
 
 ```rust
 // Integers: rounds toward negative infinity
-assert_eq!(250u8.midpoint(10), 130);  // no overflow
-assert_eq!(3u32.midpoint(4), 3);      // (3+4)/2 = 3 (floors)
+assert_eq!(250u8.midpoint(10), 130); // no overflow
+assert_eq!(3u32.midpoint(4), 3); // (3+4)/2 = 3 (floors)
 
 // Floats:
 assert_eq!(1.0f32.midpoint(2.0), 1.5);
-assert_eq!(f64::MAX.midpoint(f64::MAX), f64::MAX);  // no overflow
+assert_eq!(f64::MAX.midpoint(f64::MAX), f64::MAX); // no overflow
 ```
 
 ## `unbounded_shl` / `unbounded_shr` — 1.87
@@ -34,15 +34,15 @@ Shifts that return 0 (or all-bits for signed `>>`) when shift amount ≥ bit wid
 
 ```rust
 assert_eq!(1u32.unbounded_shl(31), 0x8000_0000);
-assert_eq!(1u32.unbounded_shl(32), 0);  // instead of panic
+assert_eq!(1u32.unbounded_shl(32), 0); // instead of panic
 assert_eq!(1u32.unbounded_shl(99), 0);
 
 assert_eq!(0x8000_0000u32.unbounded_shr(31), 1);
 assert_eq!(0x8000_0000u32.unbounded_shr(32), 0);
 
 // Signed right shift: fills with sign bit, then 0 when ≥ bits
-assert_eq!((-1i32).unbounded_shr(31), -1);   // arithmetic shift
-assert_eq!((-1i32).unbounded_shr(32), 0);    // beyond: returns 0 for >>
+assert_eq!((-1i32).unbounded_shr(31), -1); // arithmetic shift
+assert_eq!((-1i32).unbounded_shr(32), 0); // beyond: returns 0 for >>
 ```
 
 ## `u{n}::*_sub_signed` — 1.90
@@ -52,14 +52,14 @@ Subtract a signed value from an unsigned integer with the full arithmetic family
 ```rust
 let x: u32 = 100;
 
-assert_eq!(x.checked_sub_signed(-5),  Some(105));  // negative rhs adds
-assert_eq!(x.checked_sub_signed(200), None);        // would underflow
+assert_eq!(x.checked_sub_signed(-5), Some(105)); // negative rhs adds
+assert_eq!(x.checked_sub_signed(200), None); // would underflow
 
-assert_eq!(x.wrapping_sub_signed(-5),    105u32);
-assert_eq!(x.wrapping_sub_signed(200),   x.wrapping_sub(200));
+assert_eq!(x.wrapping_sub_signed(-5), 105u32);
+assert_eq!(x.wrapping_sub_signed(200), x.wrapping_sub(200));
 
 assert_eq!(x.saturating_sub_signed(200), 0u32);
-assert_eq!(x.saturating_sub_signed(-5),  105u32);
+assert_eq!(x.saturating_sub_signed(-5), 105u32);
 
 let (result, overflowed) = x.overflowing_sub_signed(-5);
 // (105, false)
@@ -94,11 +94,11 @@ Panic on overflow in **both debug and release** builds. Unlike `checked_*` (retu
 `f32`/`f64` rounding methods usable in `const` contexts.
 
 ```rust
-const FLOOR: f32 = 1.7f32.floor();       // 1.0
-const CEIL: f64 = 1.2f64.ceil();         // 2.0
-const TRUNC: f32 = (-1.7f32).trunc();    // -1.0
-const FRACT: f64 = 1.7f64.fract();       // 0.7
-const ROUND: f32 = 1.5f32.round();       // 2.0
+const FLOOR: f32 = 1.7f32.floor(); // 1.0
+const CEIL: f64 = 1.2f64.ceil(); // 2.0
+const TRUNC: f32 = (-1.7f32).trunc(); // -1.0
+const FRACT: f64 = 1.7f64.fract(); // 0.7
+const ROUND: f32 = 1.5f32.round(); // 2.0
 const ROUND_TIES: f64 = 0.5f64.round_ties_even(); // 0.0
 ```
 

@@ -59,14 +59,19 @@ Non-`unsafe` functions can carry `#[target_feature]`. Safe to call from function
 
 ```rust
 #[target_feature(enable = "avx2")]
-fn avx2_work() { /* safe, no unsafe fn */ }
+fn avx2_work() { /* safe, no unsafe fn */
+}
 
 #[target_feature(enable = "avx2")]
-fn caller() { avx2_work(); }  // safe: same feature context
+fn caller() {
+    avx2_work();
+} // safe: same feature context
 
 fn dynamic_caller() {
     if is_x86_feature_detected!("avx2") {
-        unsafe { avx2_work(); }  // still requires unsafe
+        unsafe {
+            avx2_work();
+        } // still requires unsafe
     }
 }
 ```
@@ -78,7 +83,7 @@ fn dynamic_caller() {
 ```rust
 #[target_feature(enable = "avx2")]
 fn process() {
-    let a = _mm256_setzero_si256();  // safe here, no unsafe block needed
+    let a = _mm256_setzero_si256(); // safe here, no unsafe block needed
     let b = _mm256_set1_epi32(1);
     let c = _mm256_add_epi32(a, b);
 }
@@ -93,10 +98,7 @@ use core::arch::naked_asm;
 
 #[unsafe(naked)]
 pub unsafe extern "sysv64" fn wrapping_add(a: u64, b: u64) -> u64 {
-    naked_asm!(
-        "lea rax, [rdi + rsi]",
-        "ret"
-    );
+    naked_asm!("lea rax, [rdi + rsi]", "ret");
 }
 
 // Useful for: OS/hypervisor stubs, FFI thunks, custom calling conventions

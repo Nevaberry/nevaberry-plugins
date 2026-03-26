@@ -8,12 +8,14 @@ Stabilized in Rust 1.85.0 (2025-02-20). Enable with `edition = "2024"` in `Cargo
 
 ```rust
 // 2021
-extern "C" { fn foo(); }
+extern "C" {
+    fn foo();
+}
 
 // 2024
 unsafe extern "C" {
     fn foo();
-    safe fn bar();  // opt-in: callable without unsafe block
+    safe fn bar(); // opt-in: callable without unsafe block
 }
 ```
 
@@ -40,7 +42,9 @@ The lint `unsafe_op_in_unsafe_fn` is now warn-by-default in 2021, and an error i
 ```rust
 // 2024: unsafe operations inside unsafe fn still need a block
 unsafe fn helper() {
-    unsafe { some_unsafe_op(); }
+    unsafe {
+        some_unsafe_op();
+    }
 }
 ```
 
