@@ -1,6 +1,6 @@
 ---
 name: postgresql-knowledge-patch
-description: This skill should be used when writing PostgreSQL queries, using MERGE, JSON functions, logical replication, partitioning, or any PostgreSQL features from 17+ (2024-2026).
+description: PostgreSQL changes since training cutoff (latest: 18.1) — JSON_TABLE, SQL/JSON functions, MERGE RETURNING, virtual generated columns, UUIDv7, temporal PRIMARY KEY. Load before working with PostgreSQL.
 license: MIT
 metadata:
   author: Nevaberry
@@ -67,8 +67,20 @@ For detailed examples and code samples, consult **`references/postgresql-17.md`*
 Generated columns are now **virtual by default** (computed at read time, no disk storage). Use `STORED` for write-time storage.
 
 ```sql
-CREATE TABLE t (a int, b int, total int GENERATED ALWAYS AS (a + b));          -- virtual (PG18 default)
-CREATE TABLE t (a int, b int, total int GENERATED ALWAYS AS (a + b) STORED);   -- stored (PG16-17 behavior)
+CREATE TABLE t (
+  a int,
+  b int,
+  total int GENERATED ALWAYS AS (a + b)
+);
+
+-- virtual (PG18 default)
+CREATE TABLE t (
+  a int,
+  b int,
+  total int GENERATED ALWAYS AS (a + b) STORED
+);
+
+-- stored (PG16-17 behavior)
 ```
 
 ### OLD/NEW in RETURNING (Major)
@@ -80,7 +92,6 @@ MERGE INTO t USING s ON t.id = s.id ... RETURNING merge_action(), old.*, new.*;
 ```
 
 ### Temporal Constraints (WITHOUT OVERLAPS)
-
 | Feature | Syntax |
 |---------|--------|
 | Temporal PK | `PRIMARY KEY (id, range_col WITHOUT OVERLAPS)` |
@@ -92,8 +103,11 @@ Requires `btree_gist` extension.
 ### NOT ENFORCED Constraints
 
 ```sql
-ALTER TABLE t ADD CHECK (val > 0) NOT ENFORCED;
-ALTER TABLE t ADD FOREIGN KEY (x) REFERENCES r NOT ENFORCED;
+ALTER TABLE t
+ADD CHECK (val > 0) NOT ENFORCED;
+
+ALTER TABLE t
+ADD FOREIGN KEY (x) REFERENCES r NOT ENFORCED;
 ```
 
 ### New Functions

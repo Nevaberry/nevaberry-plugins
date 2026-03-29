@@ -1,6 +1,6 @@
 ---
 name: postgis-knowledge-patch
-description: This skill should be used when writing PostGIS queries, using spatial functions, geography types, raster operations, topology, or any PostGIS features from 3.5+ (2024-2026).
+description: PostGIS changes since training cutoff (latest: 3.6.1) — SFCGAL CG_* rename, ST_CoverageClean, ST_AsRasterAgg, topology bigint IDs, viewport simplification, 3D SFCGAL ops. Load before working with PostGIS.
 license: MIT
 metadata:
   author: Nevaberry
@@ -48,7 +48,10 @@ For detailed descriptions, code examples, and full context on each change, consu
 ### ST_Clip `touched` (Raster)
 ```sql
 -- Include pixels touched by geometry, not just centers-inside
-SELECT ST_Clip(rast, geom, touched => true) FROM raster_table;
+SELECT
+  ST_Clip (rast, geom, touched => true)
+FROM
+  raster_table;
 ```
 
 ## 3.5.1 (2024-12-22)

@@ -4,15 +4,15 @@
 
 ```sh
 bun build ./app.ts --outdir=dist
-bun build ./styles.css --outdir=dist     # CSS bundling
+bun build ./styles.css --outdir=dist # CSS bundling
 ```
 
 ## Standalone Executables
 
 ```sh
 bun build --compile app.ts
-bun build --compile --target=bun-windows-x64 app.ts    # Cross-compile
-bun build --compile --target=bun-windows-arm64 app.ts  # Windows ARM64
+bun build --compile --target=bun-windows-x64 app.ts   # Cross-compile
+bun build --compile --target=bun-windows-arm64 app.ts # Windows ARM64
 bun build --compile --bytecode app.ts                 # Faster startup (CJS default)
 bun build --compile --bytecode --format=esm app.ts    # ESM bytecode
 ```
@@ -67,15 +67,15 @@ Bun.serve({ routes: { "/": homepage } });
 
 ```sh
 bun build ./server.ts --target=bun --outdir=dist
-bun build ./server.ts --compile --outfile=my-app  # Single executable
+bun build ./server.ts --compile --outfile=my-app # Single executable
 ```
 
 ## Bundle Analysis
 
 ```sh
 bun build entry.js --metafile=meta.json --outdir=dist
-bun build entry.js --metafile-md --outdir=dist                  # LLM-friendly
-bun build entry.js --metafile=meta.json --metafile-md=meta.md   # Both
+bun build entry.js --metafile-md --outdir=dist                # LLM-friendly
+bun build entry.js --metafile=meta.json --metafile-md=meta.md # Both
 ```
 
 ```ts
@@ -133,11 +133,11 @@ declare module "bun:bundle" {
 ## Common Options
 
 ```sh
-bun build --format=cjs app.ts            # CommonJS output
-bun build --env="PUBLIC_*" app.ts        # Inject env vars
-bun build --drop=console app.ts          # Remove function calls
-bun build --packages=external app.ts     # Externalize packages
-bun build --minify --keep-names app.ts   # Preserve fn/class names
+bun build --format=cjs app.ts          # CommonJS output
+bun build --env="PUBLIC_*" app.ts      # Inject env vars
+bun build --drop=console app.ts        # Remove function calls
+bun build --packages=external app.ts   # Externalize packages
+bun build --minify --keep-names app.ts # Preserve fn/class names
 ```
 
 ## Plugin Hooks

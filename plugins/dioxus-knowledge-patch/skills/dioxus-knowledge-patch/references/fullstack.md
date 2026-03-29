@@ -92,7 +92,7 @@ Data fetched on server, cached for hydration on client:
 ```rust
 fn UserProfile(id: u32) -> Element {
     let user = use_server_future(move || async move {
-        get_user(id).await  // runs on server during SSR, cached for client
+        get_user(id).await // runs on server during SSR, cached for client
     })?;
     rsx! { "{user.name}" }
 }
@@ -125,13 +125,13 @@ use dioxus::prelude::*;
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        // Serve static assets from /public
-        .serve_static_assets("dist")
-        // Full SSR + hydration + server functions
-        .serve_dioxus_application(ServeConfig::new(), App)
-        // Or just server functions (API only)
-        // .register_server_functions()
-        ;
+// Serve static assets from /public
+.serve_static_assets("dist")
+// Full SSR + hydration + server functions
+.serve_dioxus_application(ServeConfig::new(), App)
+// Or just server functions (API only)
+// .register_server_functions()
+;
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
@@ -142,9 +142,9 @@ async fn main() {
 
 ```rust
 ServeConfig::new()
-    .index_html(custom_html)           // Custom index.html template
-    .streaming_mode(StreamingMode::OutOfOrder)  // Streaming SSR
-    .incremental(IncrementalConfig::default())  // ISR caching
+    .index_html(custom_html) // Custom index.html template
+    .streaming_mode(StreamingMode::OutOfOrder) // Streaming SSR
+    .incremental(IncrementalConfig::default()) // ISR caching
 ```
 
 ## Launch Patterns
@@ -215,7 +215,7 @@ fn App() -> Element {
             let panel = load_admin_panel().await;
             panel
         }
-        _ => rsx! { Home {} }
+        _ => rsx! { Home {} },
     }
 }
 ```

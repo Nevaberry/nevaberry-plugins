@@ -1,6 +1,6 @@
 ---
 name: dioxus-knowledge-patch
-description: This skill should be used when writing Dioxus code, building Rust web/desktop/mobile apps with Dioxus, using RSX macro, signals, server functions, or any Dioxus features from 0.5+ (2024-2026).
+description: Dioxus changes since training cutoff (latest: 0.7.3) — Signals replacing use_state, RSX macro overhaul, server functions, asset!() system, dx CLI, Element-as-Result. Load before working with Dioxus.
 license: MIT
 metadata:
   author: Nevaberry
@@ -52,8 +52,12 @@ See `references/rsx-patterns.md` for attributes, events, prop spreading.
 
 ```rust
 const LOGO: Asset = asset!("/assets/logo.png");
-const HERO: Asset = asset!("/hero.png", ImageAssetOptions::new()
-    .format(ImageFormat::Avif).preload(true));
+const HERO: Asset = asset!(
+    "/hero.png",
+    ImageAssetOptions::new()
+        .format(ImageFormat::Avif)
+        .preload(true)
+);
 const STYLES: Asset = asset!("/app.css", CssAssetOptions::new().minify(true));
 ```
 
@@ -78,7 +82,7 @@ enum Route {
     Home {},
     #[route("/user/:id")]
     User { id: u32 },
-    #[route("/files/:..path")]     // Catch-all
+    #[route("/files/:..path")] // Catch-all
     Files { path: Vec<String> },
 }
 ```
@@ -116,7 +120,7 @@ Use `?` anywhere - propagates to ErrorBoundary:
 ```rust
 #[component]
 fn Profile(id: u32) -> Element {
-    let user = get_user(id)?;  // Early return on error
+    let user = get_user(id)?; // Early return on error
     rsx! { "{user.name}" }
 }
 ```

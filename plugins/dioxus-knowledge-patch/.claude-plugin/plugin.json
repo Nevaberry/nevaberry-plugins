@@ -1,5 +1,11 @@
 {
   "name": "dioxus-knowledge-patch",
   "version": "0.7.3",
-  "description": "Dioxus knowledge patch - updates Claude's knowledge about Dioxus 0.7.3 features including subsecond hot-patching, WASM splitting, Manganis assets, and Stores"
+  "description": "Dioxus changes since training cutoff (latest: 0.7.3) — Signals replacing use_state, RSX macro overhaul, server functions, asset!() system, dx CLI, Element-as-Result. Load before working with Dioxus.",
+  "author": {
+    "name": "Nevaberry"
+  },
+  "homepage": "https://nevaberry.com/ai-plugins",
+  "repository": "https://github.com/Nevaberry/nevaberry-plugins",
+  "license": "MIT"
 }

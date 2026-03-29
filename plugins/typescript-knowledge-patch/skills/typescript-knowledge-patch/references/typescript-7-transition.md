@@ -1,107 +1,89 @@
-# TypeScript 6.0 & 7.0 Transition Guide
+# TypeScript 7 (Native Port) Transition Guide
 
-TypeScript 6.0 is the **last JavaScript-based release**. TypeScript 7.0 is a complete rewrite in Go, delivering ~10x performance improvements.
+## Overview
 
-## TypeScript 7 Preview (tsgo)
+TypeScript is being rewritten from JavaScript to Go for ~10x performance. The native version will be released as **TypeScript 7.0** (`tsgo`).
 
-### Installation
+## Versioning
+
+| Version | Codebase | Role |
+|---------|----------|------|
+| 5.9 | JavaScript | Current stable |
+| 6.0 | JavaScript | **Last JS-based release**. Bridge/transition — adds deprecations to align with TS 7. No 6.1 planned, patches only for security/regressions. |
+| 7.x | Go (native) | Native port |
+
+- Codenames: **Strada** (JS codebase), **Corsa** (native port)
+- Repo: `microsoft/typescript-go`
+
+## What changes for users
+
+- **Same type system** — TS 7 aims for full parity with TS 5.x/6.x type checking
+- **New CLI binary**: `tsgo` (instead of `tsc` via Node.js)
+- **Language Server Protocol (LSP)** — TS 7 moves to standard LSP instead of the custom tsserver protocol
+- **New compiler API** — the current `ts.*` programmatic API will not work with Corsa. API is still in progress.
+- **Side-by-side usage** — install both `typescript` (6.0) and `@typescript/native-preview` (7.0). Use `tsgo` for fast type-checking, `tsc` for tooling that needs the Strada API.
+
+## Trying the native preview today
 
 ```bash
 npm install -D @typescript/native-preview
 npx tsgo --project ./tsconfig.json
+npx tsgo -b some.tsconfig.json # --build mode works
 ```
 
-### VS Code Setup
+VS Code extension: search "TypeScript Native Preview" in marketplace, then enable with:
+```json
+"typescript.experimental.useTsgo": true
+```
 
-1. Install "TypeScript (Native Preview)" extension from Marketplace
-2. Enable: `"typescript.experimental.useTsgo": true`
+`tsgo` will eventually be renamed to `tsc` in the `typescript` package.
 
-### Current Capabilities
+## TS 6.0 / 7.0 breaking changes (deprecations)
 
-**Working:**
-- Type-checking (near parity with TS6)
-- Completions with auto-imports
-- Go-to-definition, go-to-type-definition, go-to-implementation
-- Find-all-references
-- Rename
-- Signature help
-- Hover tooltips
-- `--incremental` mode
-- `--build` mode with multi-project parallelism
-- Project references
+These are removed in TS 7.0 and deprecated in TS 6.0:
 
-**Limited:**
-- Emit targets `es2021` minimum
-- No decorator emit
-- Watch mode less efficient (use `nodemon` with `--incremental`)
-- No stable API for tooling
+| Change | Details |
+|--------|---------|
+| `--strict` on by default | No longer need to specify it |
+| `--target` defaults to latest stable ES | e.g. `es2025` instead of `es3` |
+| `--target es5` removed | `es2015` is the lowest supported target |
+| `--baseUrl` removed | Use `paths` with explicit base or remove |
+| `--moduleResolution node10`/`node` removed | Use `bundler`, `nodenext`, or `node20` |
+| `rootDir` defaults to `.` | Using `outDir` requires explicit `rootDir`, or top-level sources must be alongside `tsconfig.json` |
 
-### Performance
-
-| Project | TypeScript 6.0 | tsgo 7.0 | Speedup |
-|---------|----------------|----------|---------|
-| VS Code | 89.11s | 8.74s | 10.2x |
-| Sentry | 133.08s | 16.25s | 8.2x |
-
-## TypeScript 6.0 Breaking Changes
-
-These features are deprecated in TS6 and **removed in TS7**:
-
-| Removed | Migration |
-|---------|-----------|
-| `--strict` optional | Now default, remove the flag |
-| `--target` pre-ES2015 | Minimum `es2015`, default `es2025` |
-| `--baseUrl` | Use `paths` with explicit mappings |
-| `node10` moduleResolution | Use `node16`, `nodenext`, or `bundler` |
-| `rootDir` implicit behavior | Explicit `rootDir` required |
-| `@enum`, `@constructor` JSDoc | Use TypeScript syntax instead |
-
-### Migration Tool
-
-Automatically updates tsconfig.json for TS6 compatibility:
+### Migration tool
 
 ```bash
-npx ts5to6
+npx @andrewbranch/ts5to6 --fixBaseUrl your-tsconfig.json
+npx @andrewbranch/ts5to6 --fixRootDir your-tsconfig.json
 ```
 
-## Recommended Configuration
+## Current limitations (preview)
 
-### For TypeScript 7 / tsgo
+**Working**: type-checking, `--build`, `--incremental`, project references, editor features (completions, auto-imports, go-to-definition, find-all-references, rename, hover, signature help, formatting).
 
-```json
-{
-  "compilerOptions": {
-    "module": "preserve",
-    "moduleResolution": "bundler"
-  }
-}
-```
+**Not yet complete**:
+- Downlevel emit only goes back to `es2021` (no `es2015`–`es2020` targets yet, no decorator compilation)
+- `--declaration` emit still in progress
+- `--watch` mode may be less efficient (workaround: use `nodemon` + `tsgo --incremental`)
+- No Strada API compatibility — linters/formatters using `ts.*` API won't work with Corsa
 
-### Modern Defaults (tsc --init in 5.9+)
+## JSDoc / JavaScript checking changes
 
-```json
-{
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "nodenext",
-    "strict": true,
-    "moduleDetection": "force",
-    "noUncheckedSideEffectImports": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true
-  }
-}
-```
+TypeScript 7 **rewrote** (not ported) JS/JSDoc type-checking. Dropped patterns:
 
-## Timeline
+- `@enum` and `@constructor` tags not recognized
+- `Object` is no longer treated as `any`
+- `String` is no longer treated as `string`
+- `Foo` is no longer interpreted as `typeof Foo` where the latter would be valid in TS
+- `any`/`unknown`/`undefined`-typed parameters are no longer implicitly optional
 
-- **TypeScript 6.0**: Last JS-based release, only patch releases thereafter
-- **Mid-2025**: tsgo preview for CLI typechecking
-- **End 2025**: Feature-complete language service
-- **TypeScript 7.0**: Full native release (date TBD)
+JS codebases may see new errors. Use more idiomatic/modern JSDoc patterns.
 
-## Source
+## Migration path
 
-- https://github.com/microsoft/typescript-go
-- https://devblogs.microsoft.com/typescript/typescript-native-port/
-- https://devblogs.microsoft.com/typescript/progress-on-typescript-7-december-2025/
+1. Upgrade to TS 6.0 first (addresses deprecations)
+2. Run `ts5to6` tool to fix `baseUrl` and `rootDir` automatically
+3. Fix remaining TS 6 breaking changes (module resolution, target, etc.)
+4. Install `@typescript/native-preview` side-by-side for fast type-checking
+5. Switch fully to TS 7 when it supports your project's needs

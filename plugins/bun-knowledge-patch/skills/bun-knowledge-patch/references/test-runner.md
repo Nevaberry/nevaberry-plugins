@@ -199,7 +199,7 @@ In `bunfig.toml`:
 coveragePathIgnorePatterns = ["**/__tests__/**", "**/fixtures/**"]
 concurrentTestGlob = "**/integration/**/*.test.ts"
 onlyFailures = true
-retry = 3                                               # Global retry count
+retry = 3                                                          # Global retry count
 ```
 
 ## CLI Options
@@ -208,12 +208,12 @@ retry = 3                                               # Global retry count
 bun test --reporter=junit --reporter-outfile=junit.xml
 bun test --coverage --coverage-reporter=lcov
 bun test --grep "pattern"
-bun test --randomize              # Random order
-bun test --seed 12345             # Reproduce order
-bun test --pass-with-no-tests     # Exit 0 when no tests
-bun test --only-failures          # Show only failing
-bun test -t "filter"              # Fails if no matches
-bun test --retry 3                # Retry all tests N times
+bun test --randomize          # Random order
+bun test --seed 12345         # Reproduce order
+bun test --pass-with-no-tests # Exit 0 when no tests
+bun test --only-failures      # Show only failing
+bun test -t "filter"          # Fails if no matches
+bun test --retry 3            # Retry all tests N times
 ```
 
 ## CI Behavior

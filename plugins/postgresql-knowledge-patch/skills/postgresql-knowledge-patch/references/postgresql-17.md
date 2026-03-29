@@ -5,26 +5,30 @@
 Converts JSON data to a table representation. Used in FROM clause.
 
 ```sql
-SELECT * FROM JSON_TABLE(
-  '{"name": "Alice", "items": [{"id": 1, "qty": 5}, {"id": 2, "qty": 3}]}'::jsonb,
-  '$.items[*]' COLUMNS (
-    row_num FOR ORDINALITY,
-    item_id int PATH '$.id',
-    quantity int PATH '$.qty',
-    has_id boolean EXISTS PATH '$.id'
-  )
-) AS jt;
+SELECT
+  *
+FROM
+  JSON_TABLE (
+    '{"name": "Alice", "items": [{"id": 1, "qty": 5}, {"id": 2, "qty": 3}]}'::jsonb,
+    '$.items[*]' COLUMNS (
+      row_num FOR ORDINALITY,
+      item_id int PATH '$.id',
+      quantity int PATH '$.qty',
+      has_id boolean EXISTS PATH '$.id'
+    )
+  ) AS jt;
 
 -- NESTED paths for hierarchical data
-SELECT * FROM JSON_TABLE(
-  '{"depts": [{"name": "Eng", "staff": [{"n": "A"}, {"n": "B"}]}]}'::jsonb,
-  '$.depts[*]' COLUMNS (
-    dept text PATH '$.name',
-    NESTED PATH '$.staff[*]' COLUMNS (
-      person text PATH '$.n'
+SELECT
+  *
+FROM
+  JSON_TABLE (
+    '{"depts": [{"name": "Eng", "staff": [{"n": "A"}, {"n": "B"}]}]}'::jsonb,
+    '$.depts[*]' COLUMNS (
+      dept text PATH '$.name',
+      NESTED PATH '$.staff[*]' COLUMNS (person text PATH '$.n')
     )
-  )
-) AS jt;
+  ) AS jt;
 ```
 
 Error handling: `DEFAULT ... ON ERROR`, `DEFAULT ... ON EMPTY`, `ERROR ON ERROR`.
@@ -32,11 +36,34 @@ Error handling: `DEFAULT ... ON ERROR`, `DEFAULT ... ON EMPTY`, `ERROR ON ERROR`
 ## SQL/JSON Constructor Functions
 
 ```sql
-SELECT JSON('{"a": 1}');                 -- casts text to json type
-SELECT JSON('{"a": 1}' RETURNING jsonb); -- with target type
-SELECT JSON_SCALAR(42);                  -- wraps scalar as JSON value
-SELECT JSON_SERIALIZE('{"a":1}'::jsonb); -- JSON to text
-SELECT JSON_SERIALIZE('{"a":1}'::jsonb RETURNING bytea); -- to bytea
+SELECT
+  JSON('{"a": 1}');
+
+-- casts text to json type
+SELECT
+  JSON(
+    '{"a": 1}'
+    RETURNING
+      jsonb
+  );
+
+-- with target type
+SELECT
+  JSON_SCALAR (42);
+
+-- wraps scalar as JSON value
+SELECT
+  JSON_SERIALIZE ('{"a":1}'::jsonb);
+
+-- JSON to text
+SELECT
+  JSON_SERIALIZE (
+    '{"a":1}'::jsonb
+    RETURNING
+      bytea
+  );
+
+-- to bytea
 ```
 
 ## SQL/JSON Query Functions
@@ -84,9 +111,7 @@ RETURNING merge_action(), t.*;
 MERGE can now also modify updatable views.
 
 ## COPY ON_ERROR
-
 Skip error rows instead of aborting:
-
 ```sql
 COPY t FROM '/path/data.csv' WITH (FORMAT csv, ON_ERROR ignore);
 -- Also: LOG_VERBOSITY to log skipped rows

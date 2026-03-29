@@ -34,6 +34,7 @@ def f():
     exec("x = 1")
     print(locals())  # "x" is NOT here
 
+
 # FIX: pass an explicit namespace
 def f():
     ns = {}
@@ -75,9 +76,9 @@ For introspecting deferred annotations:
 ```python
 from annotationlib import get_annotations, Format
 
-get_annotations(obj, format=Format.VALUE)       # Evaluate annotations (may raise NameError)
+get_annotations(obj, format=Format.VALUE)  # Evaluate annotations (may raise NameError)
 get_annotations(obj, format=Format.FORWARDREF)  # ForwardRef markers for unknowns
-get_annotations(obj, format=Format.STRING)       # Annotations as strings
+get_annotations(obj, format=Format.STRING)  # Annotations as strings
 ```
 
 Use `Format.FORWARDREF` for robust annotation reading (handles forward references gracefully).
@@ -112,6 +113,7 @@ Attach debugger to running processes without stopping them:
 
 ```python
 import sys
+
 sys.remote_exec(pid, "/path/to/debug_script.py")  # Execute in target process
 ```
 

@@ -97,7 +97,12 @@ No more attribute hack - call method directly:
 ```rust
 // OLD: a { dioxus_prevent_default: "onclick", onclick: handler }
 // NEW:
-a { onclick: move |e| { e.prevent_default(); handler(e); } }
+a {
+    onclick: move |e| {
+        e.prevent_default();
+        handler(e);
+    },
+}
 ```
 
 ### New Event Handlers (0.6+)
@@ -209,7 +214,7 @@ Extend elements to inherit their attributes:
 ```rust
 #[derive(Props, Clone, PartialEq)]
 struct MyLinkProps {
-    #[props(extends = GlobalAttributes)]  // gets class, id, etc.
+    #[props(extends = GlobalAttributes)] // gets class, id, etc.
     attributes: Vec<Attribute>,
 }
 fn MyLink(props: MyLinkProps) -> Element {
@@ -257,7 +262,7 @@ Use `throw` trait to bubble errors up to `ErrorBoundary`:
 
 ```rust
 fn Fallible() -> Element {
-    let data = get_data().throw()?;  // returns early, shows in ErrorBoundary
+    let data = get_data().throw()?; // returns early, shows in ErrorBoundary
     rsx! { "{data}" }
 }
 
@@ -271,7 +276,7 @@ Use `?` anywhere in components, event handlers, and tasks:
 ```rust
 #[component]
 fn Profile(id: u32) -> Element {
-    let user = get_user(id)?;  // propagates to ErrorBoundary
+    let user = get_user(id)?; // propagates to ErrorBoundary
     rsx! { "{user.name}" }
 }
 ```
@@ -327,18 +332,21 @@ Configure optimization, format conversion, and preloading:
 use dioxus::prelude::*;
 
 // Image: convert to Avif, preload for performance
-const HERO: Asset = asset!("/hero.png", ImageAssetOptions::new()
-    .format(ImageFormat::Avif)
-    .preload(true));
+const HERO: Asset = asset!(
+    "/hero.png",
+    ImageAssetOptions::new()
+        .format(ImageFormat::Avif)
+        .preload(true)
+);
 
 // CSS: minify and inject in <head>
-const STYLES: Asset = asset!("/app.css", CssAssetOptions::new()
-    .minify(true)
-    .preload(true));
+const STYLES: Asset = asset!(
+    "/app.css",
+    CssAssetOptions::new().minify(true).preload(true)
+);
 
 // JS: minify
-const SCRIPT: Asset = asset!("/app.js", JsAssetOptions::new()
-    .minify(true));
+const SCRIPT: Asset = asset!("/app.js", JsAssetOptions::new().minify(true));
 
 // Folder: bundle entire directory
 const FONTS: Asset = asset!("/fonts", FolderAssetOptions::new());

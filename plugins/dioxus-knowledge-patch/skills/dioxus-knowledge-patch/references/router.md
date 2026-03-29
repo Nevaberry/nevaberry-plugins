@@ -7,13 +7,13 @@
 enum Route {
     #[route("/")]
     Home {},
-    #[route("/user/:id")]           // Dynamic segment
+    #[route("/user/:id")] // Dynamic segment
     User { id: u32 },
-    #[route("/files/:..path")]      // Catch-all (multiple segments)
+    #[route("/files/:..path")] // Catch-all (multiple segments)
     Files { path: Vec<String> },
-    #[route("/search?:query")]      // Query parameter
+    #[route("/search?:query")] // Query parameter
     Search { query: String },
-    #[route("/docs#:section")]      // Hash fragment
+    #[route("/docs#:section")] // Hash fragment
     Docs { section: String },
 }
 ```
@@ -24,14 +24,13 @@ enum Route {
 #[derive(Routable, Clone, PartialEq)]
 enum Route {
     #[nest("/admin")]
-        #[layout(AdminLayout)]
-            #[route("/")]
-            AdminHome {},
-            #[route("/users")]
-            AdminUsers {},
-        #[end_layout]
+    #[layout(AdminLayout)]
+    #[route("/")]
+    AdminHome {},
+    #[route("/users")]
+    AdminUsers {},
+    #[end_layout]
     #[end_nest]
-
     #[route("/")]
     Home {},
 }
@@ -93,7 +92,7 @@ rsx! {
 
 ```rust
 fn Breadcrumb() -> Element {
-    let route: Route = use_route();  // Current matched route
+    let route: Route = use_route(); // Current matched route
     rsx! { "Current: {route:?}" }
 }
 ```

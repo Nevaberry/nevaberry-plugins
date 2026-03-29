@@ -1,6 +1,6 @@
 ---
 name: nextjs-knowledge-patch
-description: This skill should be used when writing Next.js code, using App Router, Server Components, Server Actions, Turbopack, or any Next.js 15.3+ / Next.js 16 features (2025-2026). It covers proxy.ts (middleware.ts replacement), "use cache", Cache Components, navigation hooks (onNavigate, useLinkStatus), caching APIs (updateTag, refresh, revalidateTag), typed routes, auto-generated PageProps, and breaking changes from 15.x to 16.x.
+description: "Next.js changes since training cutoff (latest: 16.1) — proxy.ts, \"use cache\", Cache Components, navigation hooks, typed routes, auto PageProps, React 19.2. Load before working with Next.js."
 license: MIT
 metadata:
   author: Nevaberry
@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
 Apply the `"use cache"` directive to cache pages, components, or functions. The compiler generates cache keys automatically:
 
 ```tsx
-"use cache";
+'use cache';
 
 export default async function CachedPage() {
   const data = await fetchData();
@@ -69,11 +69,14 @@ For detailed caching API patterns and code examples, see **`references/caching.m
 **`onNavigate`** — prop on `<Link>`. Fires during SPA navigations only (not all clicks). Call `e.preventDefault()` to cancel.
 
 ```tsx
-<Link href="/dashboard" onNavigate={(e) => {
-  if (hasUnsavedChanges) e.preventDefault();
-}}>
+<Link
+  href="/dashboard"
+  onNavigate={(e) => {
+    if (hasUnsavedChanges) e.preventDefault();
+  }}
+>
   Dashboard
-</Link>
+</Link>;
 ```
 
 **`useLinkStatus`** — hook from `next/navigation`. Returns `{ pending: boolean }`. Must be used inside a `<Link>` descendant. Modeled after React's `useFormStatus`.

@@ -1,6 +1,6 @@
 ---
 name: rust-knowledge-patch
-description: This skill should be used when writing Rust code with features from after Claude Opus 4.6's training cutoff (Rust 1.84–1.94, including Rust 2024 Edition).
+description: "Rust changes since training cutoff (latest: 1.94.0) \u2014 Rust 2024 Edition, async closures, trait upcasting, new std APIs, cargo resolver v3. Load before working with Rust."
 version: "1.94.0"
 license: MIT
 metadata:

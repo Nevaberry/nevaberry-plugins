@@ -1,5 +1,11 @@
 {
   "name": "postgis-knowledge-patch",
   "version": "3.6.1",
-  "description": "PostGIS knowledge patch - updates Claude's knowledge about PostGIS 3.5-3.6.1 features including spatial functions, geography types, raster operations, and topology"
+  "description": "PostGIS changes since training cutoff (latest: 3.6.1) — SFCGAL CG_* rename, ST_CoverageClean, ST_AsRasterAgg, topology bigint IDs, viewport simplification, 3D SFCGAL ops. Load before working with PostGIS.",
+  "author": {
+    "name": "Nevaberry"
+  },
+  "homepage": "https://nevaberry.com/ai-plugins",
+  "repository": "https://github.com/Nevaberry/nevaberry-plugins",
+  "license": "MIT"
 }

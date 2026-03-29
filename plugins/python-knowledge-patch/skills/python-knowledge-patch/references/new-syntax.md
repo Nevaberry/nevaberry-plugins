@@ -37,6 +37,7 @@ for part in template:
 ```python
 from string.templatelib import Template, Interpolation
 
+
 def sql(template: Template) -> tuple[str, list]:
     """Safe SQL query builder."""
     parts, params = [], []
@@ -47,6 +48,7 @@ def sql(template: Template) -> tuple[str, list]:
         else:
             parts.append(part)
     return "".join(parts), params
+
 
 user_id = 42
 query, params = sql(t"SELECT * FROM users WHERE id = {user_id}")
@@ -70,9 +72,13 @@ Annotations are no longer evaluated eagerly — they are stored as functions and
 from annotationlib import get_annotations, Format
 
 # Three formats for reading annotations:
-get_annotations(obj, format=Format.VALUE)       # Evaluate to runtime values (may raise NameError)
-get_annotations(obj, format=Format.FORWARDREF)  # Replace unknowns with ForwardRef markers
-get_annotations(obj, format=Format.STRING)       # Return as strings
+get_annotations(
+    obj, format=Format.VALUE
+)  # Evaluate to runtime values (may raise NameError)
+get_annotations(
+    obj, format=Format.FORWARDREF
+)  # Replace unknowns with ForwardRef markers
+get_annotations(obj, format=Format.STRING)  # Return as strings
 ```
 
 ### Migration

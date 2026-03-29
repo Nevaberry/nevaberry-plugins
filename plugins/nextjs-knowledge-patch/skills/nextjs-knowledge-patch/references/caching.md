@@ -8,7 +8,7 @@
 
 ```tsx
 // app/products/page.tsx
-"use cache";
+'use cache';
 
 export default async function ProductsPage() {
   const products = await db.products.findMany();
@@ -33,7 +33,7 @@ export async function getUser(id: string) {
 
 ```tsx
 async function ExpensiveChart({ data }: { data: number[] }) {
-  "use cache";
+  'use cache';
   const rendered = await renderChart(data);
   return <div dangerouslySetInnerHTML={{ __html: rendered }} />;
 }

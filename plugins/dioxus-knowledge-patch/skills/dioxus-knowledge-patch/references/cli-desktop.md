@@ -3,14 +3,14 @@
 ## CLI Commands
 
 ```bash
-dx new myapp              # Create new project
-dx serve                  # Dev server with hot-reload
-dx serve --platform web   # Specific platform
-dx build --release        # Production build
-dx bundle                 # Package for distribution
-dx check                  # Lint RSX
-dx fmt                    # Format RSX
-dx translate              # Convert HTML to RSX
+dx new myapp            # Create new project
+dx serve                # Dev server with hot-reload
+dx serve --platform web # Specific platform
+dx build --release      # Production build
+dx bundle               # Package for distribution
+dx check                # Lint RSX
+dx fmt                  # Format RSX
+dx translate            # Convert HTML to RSX
 ```
 
 ## Mobile CLI (0.6+)
@@ -37,7 +37,7 @@ dx build @client --release @server --features production
 ### Launch with Config
 
 ```rust
-use dioxus::desktop::{Config, WindowBuilder, LogicalSize};
+use dioxus::desktop::{Config, LogicalSize, WindowBuilder};
 
 fn main() {
     dioxus::LaunchBuilder::new()
@@ -46,11 +46,11 @@ fn main() {
                 .with_window(
                     WindowBuilder::new()
                         .with_title("My App")
-                        .with_inner_size(LogicalSize::new(800, 600))
+                        .with_inner_size(LogicalSize::new(800, 600)),
                 )
-                .with_disable_context_menu(true)  // No right-click menu
-                .with_background_color((255, 255, 255, 255))  // RGBA
-                .with_devtools(cfg!(debug_assertions))  // DevTools in debug
+                .with_disable_context_menu(true) // No right-click menu
+                .with_background_color((255, 255, 255, 255)) // RGBA
+                .with_devtools(cfg!(debug_assertions)), // DevTools in debug
         )
         .launch(App);
 }
@@ -63,11 +63,10 @@ Run callback before webview is created. Essential for WGPU overlays and z-orderi
 ```rust
 dioxus::LaunchBuilder::new()
     .with_cfg(
-        dioxus::desktop::Config::new()
-            .with_on_window_ready(|window| {
-                // Configure window before webview attaches
-                // Useful for child windows, z-ordering textures
-            })
+        dioxus::desktop::Config::new().with_on_window_ready(|window| {
+            // Configure window before webview attaches
+            // Useful for child windows, z-ordering textures
+        }),
     )
     .launch(App);
 ```
@@ -88,7 +87,7 @@ Edit Rust code and see changes without losing app state. Works automatically wit
 
 ```rust
 loop {
-    subsecond::call(|| my_function());  // hot-patched on save
+    subsecond::call(|| my_function()); // hot-patched on save
 }
 ```
 

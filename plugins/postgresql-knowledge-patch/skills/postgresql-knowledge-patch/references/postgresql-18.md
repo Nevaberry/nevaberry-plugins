@@ -7,13 +7,15 @@ Generated columns are now **virtual by default** (computed at read time, not sto
 ```sql
 -- Virtual (default in PG18) — no disk storage, computed on read
 CREATE TABLE orders (
-  price numeric, qty int,
+  price numeric,
+  qty int,
   total numeric GENERATED ALWAYS AS (price * qty)
 );
 
 -- Stored (explicit) — written to disk on INSERT/UPDATE
 CREATE TABLE orders (
-  price numeric, qty int,
+  price numeric,
+  qty int,
   total numeric GENERATED ALWAYS AS (price * qty) STORED
 );
 ```
@@ -24,20 +26,40 @@ DML statements can now reference pre- and post-modification row values in RETURN
 
 ```sql
 -- UPDATE: see before and after values
-UPDATE employees SET salary = salary * 1.1
-  RETURNING old.salary AS before, new.salary AS after;
+UPDATE employees
+SET
+  salary = salary * 1.1
+RETURNING
+  old.salary AS before,
+  new.salary AS
+after;
 
 -- DELETE: return deleted row
-DELETE FROM items WHERE expired RETURNING old.*;
+DELETE FROM items
+WHERE
+  expired
+RETURNING
+  old.*;
 
 -- INSERT: old.* is NULL for inserts
-INSERT INTO t (id, val) VALUES (1, 'x') RETURNING new.*;
+INSERT INTO
+  t (id, val)
+VALUES
+  (1, 'x')
+RETURNING
+  new.*;
 
 -- MERGE: both old and new available
-MERGE INTO target t USING source s ON t.id = s.id
-WHEN MATCHED THEN UPDATE SET val = s.val
-WHEN NOT MATCHED THEN INSERT (id, val) VALUES (s.id, s.val)
-RETURNING merge_action(), old.*, new.*;
+MERGE INTO target t USING source s ON t.id = s.id WHEN MATCHED THEN
+UPDATE
+SET
+  val = s.val WHEN NOT MATCHED THEN INSERT (id, val)
+VALUES
+  (s.id, s.val)
+RETURNING
+  merge_action (),
+  old.*,
+  new.*;
 ```
 
 ## Temporal Constraints (WITHOUT OVERLAPS)
@@ -56,15 +78,15 @@ CREATE TABLE bookings (
 CREATE TABLE subscriptions (
   user_id int,
   plan text,
-  valid_during daterange,
-  UNIQUE (user_id, valid_during WITHOUT OVERLAPS)
+valid_during daterange,
+UNIQUE (user_id, valid_during WITHOUT OVERLAPS)
 );
 
 -- Temporal foreign key using PERIOD
 CREATE TABLE booking_details (
   booking_id int,
-  detail_range tsrange,
-  FOREIGN KEY (booking_id, PERIOD detail_range)
+detail_range tsrange,
+FOREIGN KEY (booking_id, PERIOD detail_range)
     REFERENCES bookings (room_id, PERIOD booked_during)
 );
 ```
@@ -94,9 +116,8 @@ Unicode-aware case folding for case-insensitive comparison. Handles characters w
 ```sql
 SELECT casefold('Straße') = casefold('STRASSE');  -- true
 ```
-
-## array_sort() and array_reverse()
-
+## array_sort ()
+and array_reverse ()
 ```sql
 SELECT array_sort(ARRAY[3, 1, 2]);       -- {1,2,3}
 SELECT array_reverse(ARRAY[1, 2, 3]);    -- {3,2,1}

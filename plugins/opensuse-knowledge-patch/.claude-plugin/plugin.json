@@ -1,0 +1,11 @@
+{
+  "name": "opensuse-knowledge-patch",
+  "version": "15.6",
+  "description": "openSUSE Leap changes since training cutoff (latest: 15.6) — Cockpit web console, NVIDIA SUSE Prime, Bumblebee removal, 4096-bit signing key. Load before working with openSUSE.",
+  "author": {
+    "name": "Nevaberry"
+  },
+  "homepage": "https://nevaberry.com/ai-plugins",
+  "repository": "https://github.com/Nevaberry/nevaberry-plugins",
+  "license": "MIT"
+}

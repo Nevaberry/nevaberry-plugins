@@ -1,6 +1,6 @@
 ---
 name: python-knowledge-patch
-description: This skill should be used when writing Python code, using t-strings (template strings), deferred annotation evaluation, free-threaded Python, subinterpreters, zstd compression, or any Python features from 3.13+ (2024-2026).
+description: Python changes since training cutoff (latest: 3.14) — t-strings, deferred annotations, free-threaded CPython, subinterpreters, zstd compression, dead battery removals. Load before working with Python.
 license: MIT
 metadata:
   author: Nevaberry

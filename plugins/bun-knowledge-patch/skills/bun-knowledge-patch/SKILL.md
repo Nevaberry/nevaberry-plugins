@@ -1,6 +1,6 @@
 ---
 name: bun-knowledge-patch
-description: This skill should be used when writing Bun code, using Bun-specific APIs, bun:* modules, Bun.serve(), bundler features, or any Bun features from 1.2+ (2025-2026).
+description: "Bun changes since training cutoff (latest: 1.3.10) \u2014 S3 client, built-in SQL/Redis, route-based HTTP server, CSS bundler, V8 compatibility. Load before working with Bun."
 license: MIT
 metadata:
   author: Nevaberry

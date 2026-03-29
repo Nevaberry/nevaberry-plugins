@@ -23,7 +23,10 @@ Seeded pseudo-random points produce different results. Regenerate if reproducibi
 
 ```sql
 -- Include pixels touched by geometry, not just centers-inside
-SELECT ST_Clip(rast, geom, touched => true) FROM raster_table;
+SELECT
+  ST_Clip (rast, geom, touched => true)
+FROM
+  raster_table;
 ```
 
 ### 3.5.1 — ST_TileEnvelope Clips to Tile Plane Extent

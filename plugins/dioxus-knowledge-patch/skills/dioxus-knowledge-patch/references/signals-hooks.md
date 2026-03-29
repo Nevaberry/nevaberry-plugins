@@ -5,11 +5,11 @@
 `Signal<T>` is always `Copy` (via generational-box). Auto-subscribes when read in component body.
 
 ```rust
-let count = use_signal(|| 0);       // Signal<i32>, Copy
-count.read();                        // &i32
-count.write();                       // &mut i32
-count += 1;                          // shorthand for *count.write() += 1
-count.set(5);                        // replace value
+let count = use_signal(|| 0); // Signal<i32>, Copy
+count.read(); // {code}i32
+count.write(); // {code}mut i32
+count += 1; // shorthand for *count.write() += 1
+count.set(5); // replace value
 
 // Only re-renders components that READ the signal (not event handlers)
 ```
@@ -22,7 +22,7 @@ App-wide state accessible from any component:
 static THEME: GlobalSignal<Theme> = GlobalSignal::new(|| Theme::Dark);
 
 fn Settings() -> Element {
-    let theme = THEME();  // reads global
+    let theme = THEME(); // reads global
     rsx! { button { onclick: move |_| *THEME.write() = Theme::Light, "Light" } }
 }
 ```
@@ -34,8 +34,8 @@ fn Settings() -> Element {
 
 ```rust
 let count = use_signal(|| 0);
-count.read();  // component re-renders when count changes
-count.peek();  // just get value, no subscription
+count.read(); // component re-renders when count changes
+count.peek(); // just get value, no subscription
 ```
 
 ### Mapped Signals
@@ -88,7 +88,7 @@ Recomputes only when dependencies change:
 
 ```rust
 let count = use_signal(|| 0);
-let doubled = use_memo(move || count() * 2);  // only recomputes when count changes
+let doubled = use_memo(move || count() * 2); // only recomputes when count changes
 rsx! { "{doubled}" }
 ```
 
@@ -221,10 +221,10 @@ let task = spawn(async move {
     // long-running work
 });
 
-task.cancel();   // Stop and remove task
-task.pause();    // Suspend polling (task stays in memory)
-task.resume();   // Resume paused task
-task.wake();     // Manually wake a sleeping task
+task.cancel(); // Stop and remove task
+task.pause(); // Suspend polling (task stays in memory)
+task.resume(); // Resume paused task
+task.wake(); // Manually wake a sleeping task
 ```
 
 ## Reactivity Gotchas
@@ -248,7 +248,8 @@ Style strings with memos have subscription issues. Use individual CSS properties
 
 ```rust
 // BAD: Style string with memo - won't update
-let style = use_memo(move || format!("font-weight: {}", if bold() { "bold" } else { "normal" }));
+let style =
+    use_memo(move || format!("font-weight: {}", if bold() { "bold" } else { "normal" }));
 rsx! { p { style: style } }
 
 // GOOD: Individual CSS properties with direct signal reads

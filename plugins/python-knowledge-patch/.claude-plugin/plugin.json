@@ -1,5 +1,11 @@
 {
   "name": "python-knowledge-patch",
-  "version": "3.14.0",
-  "description": "Python knowledge patch - updates Claude's knowledge about Python 3.13-3.14 features including t-strings, deferred annotation evaluation, free-threaded Python, subinterpreters, and zstd compression"
+  "version": "3.14",
+  "description": "Python changes since training cutoff (latest: 3.14) — t-strings, deferred annotations, free-threaded CPython, subinterpreters, zstd compression, dead battery removals. Load before working with Python.",
+  "author": {
+    "name": "Nevaberry"
+  },
+  "homepage": "https://nevaberry.com/ai-plugins",
+  "repository": "https://github.com/Nevaberry/nevaberry-plugins",
+  "license": "MIT"
 }

@@ -105,8 +105,8 @@ const valid = await Bun.CSRF.verify(sessionId, token); // true/false
 Run HTML files directly with hot reloading:
 
 ```sh
-bun ./index.html           # Single-page app
-bun './**/*.html'          # Multi-page app (glob pattern)
+bun ./index.html  # Single-page app
+bun './**/*.html' # Multi-page app (glob pattern)
 ```
 
 ## Browser Console Streaming
