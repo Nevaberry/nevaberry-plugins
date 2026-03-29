@@ -1,6 +1,6 @@
 # Removals & Migration Paths
 
-Complete list of major removals in SLES 16 with migration guidance.
+Complete list of major removals in SUSE 16 (SLES and openSUSE Leap) with migration guidance.
 
 ## Installer & Management
 
@@ -24,6 +24,7 @@ Complete list of major removals in SLES 16 with migration guidance.
 |---------|-------------|-----------|
 | Xen hypervisor | KVM | HVM/PVH guests still run under KVM; Xen-specific tooling removed |
 | Xorg | Wayland + XWayland | X11 apps run via XWayland; Xorg-only apps need testing |
+| VNC server | GNOME Remote Desktop (RDP) | Use RDP clients instead of VNC |
 
 ## Init System
 
@@ -40,6 +41,14 @@ Complete list of major removals in SLES 16 with migration guidance.
 | `sapconf` | `saptune` | Replace `sapconf` with `saptune` for SAP tuning |
 | `dovecot` 2.3 config | dovecot 2.4 | Incompatible config format; manual migration required |
 
+## Desktop Toolkits
+
+| Removed | Replacement | Migration |
+|---------|-------------|-----------|
+| GTK2 | GTK3+/GTK4 | Port GTK2 applications to GTK3 or GTK4 |
+| Qt5 | Qt6 | Port Qt5 applications to Qt6 |
+| wxWidgets | — | Use GTK3+/GTK4 or Qt6 instead |
+
 ## Libraries & Utilities
 
 | Removed | Replacement | Migration |
@@ -53,3 +62,13 @@ Complete list of major removals in SLES 16 with migration guidance.
 | Removed | Notes |
 |---------|-------|
 | 32-bit support | x86-64-v2 minimum required; `ia32_emulation` kernel parameter available on x86_64 for legacy 32-bit binaries |
+
+## openSUSE-Only Removals
+
+| Removed | Replacement | Notes |
+|---------|-------------|-------|
+| HexChat | Polari or Flatpak | Upstream archived |
+| `ansible-9` / `ansible-core-2.16` | — | Removed from repos |
+| `criu` | — | Removed |
+| nmap | — | Deprecated (license change), replacement pending |
+| PulseAudio | PipeWire | Auto-migrated on upgrade |

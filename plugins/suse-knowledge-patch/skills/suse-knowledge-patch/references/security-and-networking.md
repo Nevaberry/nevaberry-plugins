@@ -2,7 +2,7 @@
 
 ## SELinux (Replaces AppArmor)
 
-SELinux is enforcing by default in SLES 16 with policies for 400+ modules. AppArmor is no longer the default security framework.
+SELinux is enforcing by default in SUSE 16 with policies for 400+ modules. AppArmor is no longer the default security framework.
 
 ### Common Operations
 
@@ -67,7 +67,7 @@ semanage port -a -t http_port_t -p tcp 8080
 
 ### Interface Naming
 
-SLES 16 uses systemd predictable naming (different from SLES 15's persistent naming scheme). For custom naming, use `systemd.link` files:
+SUSE 16 uses systemd predictable naming (different from SUSE 15's persistent naming scheme). For custom naming, use `systemd.link` files:
 
 ```ini
 # /etc/systemd/network/10-custom.link
@@ -104,7 +104,7 @@ nmcli connection down static-eth0
 
 ## SSH Root Password Login Disabled
 
-New SLES 16 installs disable password-based SSH for root by default:
+New SUSE 16 installs disable password-based SSH for root by default:
 
 - If no SSH key is provided during install, `sshd` won't be enabled at all
 - Key-based authentication is the expected default

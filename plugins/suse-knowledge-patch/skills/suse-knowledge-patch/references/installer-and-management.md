@@ -2,7 +2,7 @@
 
 ## Agama Replaces YaST
 
-YaST and AutoYaST are fully removed in SLES 16. The new **Agama** installer provides:
+YaST and AutoYaST are fully removed in SUSE 16 (both SLES and openSUSE Leap). The new **Agama** installer provides:
 
 - **Web UI**: Browser-based interactive installation (accessible on port 9090 during install)
 - **CLI**: `agama` command for scripted and headless installs
@@ -31,7 +31,7 @@ Key differences from AutoYaST:
 
 ## Post-Install Management Replacements
 
-| YaST Module | SLES 16 Replacement |
+| YaST Module | SUSE 16 Replacement |
 |-------------|---------------------|
 | YaST remote administration | **Cockpit** (web-based, port 9090) |
 | AutoYaST config management | **Salt** or **Ansible** |
@@ -50,3 +50,17 @@ systemctl enable --now cockpit.socket
 
 # Access at https://<hostname>:9090
 ```
+
+SUSE-specific Cockpit modules: `cockpit-subscriptions`, `cockpit-repositories`, `cockpit-packages`, `cockpit-packagekit`, `cockpit-selinux`. The `cockpit` pattern installs the full set.
+
+### Kdump Configuration
+
+With YaST removed, configure kdump via `kdumptool` and `/etc/sysconfig/kdump`:
+
+```bash
+# Key variables in /etc/sysconfig/kdump:
+# KDUMP_CRASHKERNEL - memory reserved for crash kernel
+# KDUMP_UPDATE_BOOTLOADER - auto-update bootloader config
+```
+
+**Note**: Kdump is NOT enabled by default in SLES 16.0 (fix planned for 16.1).
